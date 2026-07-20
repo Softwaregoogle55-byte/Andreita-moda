@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Andreita Moda - Administración</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); min-height: 100vh; }
+        
+        .login-container { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .login-box { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center; width: 400px; }
+        .login-box h1 { color: #e91e63; font-size: 2.5em; margin-bottom: 10px; }
+        .login-box h2 { color: #666; margin-bottom: 30px; }
+        .login-box input { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; }
+        .login-box input:focus { outline: none; border-color: #e91e63; }
+        .login-box button { width: 100%; padding: 12px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        .login-box button:hover { transform: translateY(-2px); }
+        .error-msg { color: red; margin-top: 10px; display: none; }
+
+        .admin-panel { background: #f5f5f5; min-height: 100vh; }
+        header { background: white; padding: 15px 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .header-left img { width: 45px; height: 45px; border-radius: 10px; object-fit: cover; }
+        header h1 { color: #e91e63; font-size: 1.5em; }
+        
+        .notification-bell { position: relative; cursor: pointer; font-size: 1.8em; margin-right: 20px; transition: transform 0.3s; }
+        .notification-bell:hover { transform: scale(1.1); }
+        .notification-badge { position: absolute; top: -8px; right: -8px; background: #ff0000; color: white; border-radius: 50%; padding: 2px 7px; font-size: 0.4em; font-weight: bold; min-width: 20px; text-align: center; display: none; }
+        
+        .header-right { display: flex; align-items: center; gap: 15px; }
+        .btn-logout { padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+
+        .tabs { display: flex; gap: 5px; padding: 20px 30px 0; background: #f5f5f5; flex-wrap: wrap; }
+        .tab-btn { padding: 12px 25px; background: #ddd; border: none; border-radius: 10px 10px 0 0; cursor: pointer; font-weight: bold; font-size: 0.95em; transition: all 0.3s; }
+        .tab-btn.active { background: white; color: #e91e63; }
+        .tab-btn:hover { background: #e0e0e0; }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        
+        .product-form, .products-list, .notifications-panel, .config-panel { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .product-form h2, .products-list h2, .notifications-panel h2 { color: #e91e63; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: #333; font-weight: 500; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; font-family: inherit; }
+        .form-group textarea { resize: vertical; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .form-actions { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-primary { padding: 12px 30px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; flex: 1; }
+        .btn-secondary { padding: 12px 30px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer; }
+        .preview { margin-top: 10px; }
+        .preview img, .preview video { max-width: 100%; max-height: 200px; border-radius: 8px; }
+
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
+        .product-card { background: #fff5f7; border-radius: 10px; overflow: hidden; border: 1px solid #fce4ec; transition: transform 0.3s; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(233,30,99,0.2); }
+        .product-card img { width: 100%; height: 180px; object-fit: cover; }
+        .product-info { padding: 15px; }
+        .product-info h3 { margin-bottom: 8px; color: #333; font-size: 1em; }
+        .product-info .price { font-size: 1.3em; color: #e91e63; font-weight: bold; margin-bottom: 8px; }
+        .product-info .category { display: inline-block; background: #e91e63; color: white; padding: 3px 10px; border-radius: 15px; font-size: 0.75em; margin-bottom: 10px; }
+        .card-actions { display: flex; gap: 8px; }
+        .card-actions button { flex: 1; padding: 8px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.85em; }
+        .btn-edit { background: #ffc107; color: #333; }
+        .btn-delete { background: #dc3545; color: white; }
+
+        .notifications-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .btn-mark-all { padding: 8px 15px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.9em; }
+        .notification-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; margin-bottom: 10px; border-radius: 10px; border-left: 4px solid #e91e63; transition: all 0.3s; }
+        .notification-item.no-leida { background: #fff5f7; font-weight: 500; }
+        .notification-item.leida { background: #f9f9f9; opacity: 0.7; }
+        .notification-content { flex: 1; }
+        .notification-content .mensaje { font-size: 1em; color: #333; margin-bottom: 5px; }
+        .notification-content .fecha { font-size: 0.8em; color: #999; }
+        .notification-actions { display: flex; gap: 8px; }
+        .btn-leer { padding: 5px 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.8em; }
+        .btn-eliminar-notif { padding: 5px 10px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.8em; }
+        .no-notifications { text-align: center; color: #999; padding: 40px; }
+
+        .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .qr-preview-container { background: #f9f9f9; padding: 20px; border-radius: 10px; text-align: center; }
+        .qr-preview-container img { width: 250px; height: 250px; object-fit: contain; background: white; padding: 10px; border-radius: 10px; }
+
+        @keyframes bellRing { 0%, 100% { transform: rotate(0); } 10%, 30% { transform: rotate(15deg); } 20%, 40% { transform: rotate(-15deg); } 50% { transform: rotate(0); } }
+        .ring { animation: bellRing 0.5s ease-in-out; }
+
+        @media (max-width: 1024px) { .container { grid-template-columns: 1fr; } .config-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } .login-box { width: 90%; } header h1 { font-size: 1.2em; } .tabs { flex-direction: column; } }
+    </style>
+</head>
+<body>
+    <!-- LOGIN -->
+    <div id="loginSection" class="login-container">
+        <div class="login-box">
+            <h1>✨ Andreita Moda</h1>
+            <h2>Panel Administrativo</h2>
+            <form id="loginForm">
+                <input type="text" id="username" placeholder="👤 Usuario" required>
+                <input type="password" id="password" placeholder="🔑 Contraseña" required>
+                <button type="submit">Iniciar Sesión</button>
+                <p id="loginError" class="error-msg"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- PANEL ADMIN -->
+    <div id="adminPanel" class="admin-panel" style="display: none;">
+        <header>
+            <div class="header-left">
+                <img src="../img/logo.png" alt="Logo" onerror="this.style.display='none'">
+                <h1>Andreita Moda - Administración</h1>
+            </div>
+            <div class="header-right">
+                <div class="notification-bell" onclick="cambiarTab('notificaciones')" title="Notificaciones">🔔<span id="notificationBadge" class="notification-badge"></span></div>
+                <button onclick="logout()" class="btn-logout">🚪 Cerrar Sesión</button>
+            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="cambiarTab('productos')">📦 Productos</button>
+            <button class="tab-btn" onclick="cambiarTab('notificaciones')">🔔 Notificaciones <span id="tabBadge"></span></button>
+            <button class="tab-btn" onclick="cambiarTab('configuracion')">⚙️ Configuración</button>
+        </div>
+
+        <!-- TAB PRODUCTOS -->
+        <div id="tabProductos" class="container">
+            <div class="product-form">
+                <h2 id="formTitle">➕ Agregar Nuevo Producto</h2>
+                <form id="productForm" enctype="multipart/form-data">
+                    <input type="hidden" id="productId">
+                    <div class="form-group"><label>Nombre *</label><input type="text" id="nombre" placeholder="Ej: Vestido Floral" required></div>
+                    <div class="form-group"><label>Descripción</label><textarea id="descripcion" rows="3" placeholder="Describe el producto..."></textarea></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Precio (Bs) *</label><input type="number" id="precio" step="0.01" placeholder="0.00" required></div>
+                        <div class="form-group"><label>Categoría</label><select id="categoria"><option value="">Seleccionar</option><option value="vestidos">Vestidos</option><option value="blusas">Blusas</option><option value="pantalones">Pantalones</option><option value="faldas">Faldas</option><option value="accesorios">Accesorios</option><option value="chaquetas">Chaquetas</option></select></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Talla</label><select id="talla"><option value="">Seleccionar</option><option value="XS">XS</option><option value="S">S</option><option value="M">M</option><option value="L">L</option><option value="XL">XL</option></select></div>
+                        <div class="form-group"><label>Color</label><input type="text" id="color" placeholder="Ej: Rosa"></div>
+                    </div>
+                    <div class="form-group"><label>📷 Imagen</label><input type="file" id="imagen" accept="image/*"><div id="imagenPreview" class="preview"></div></div>
+                    <div class="form-group"><label>🎥 Video</label><input type="file" id="video" accept="video/*"><div id="videoPreview" class="preview"></div></div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">💾 Guardar</button>
+                        <button type="button" class="btn-secondary" onclick="limpiarFormulario()">🗑️ Limpiar</button>
+                    </div>
+                </form>
+            </div>
+            <div class="products-list">
+                <h2>📦 Productos Publicados</h2>
+                <div id="productsGrid" class="products-grid"><p style="text-align:center;color:#999;">Cargando...</p></div>
+            </div>
+        </div>
+
+        <!-- TAB NOTIFICACIONES -->
+        <div id="tabNotificaciones" class="container" style="display: none; grid-template-columns: 1fr;">
+            <div class="notifications-panel">
+                <div class="notifications-header">
+                    <h2>🔔 Notificaciones de Clientes</h2>
+                    <button class="btn-mark-all" onclick="marcarTodasLeidas()">✓ Marcar todas leídas</button>
+                </div>
+                <div id="notificationsList"><p class="no-notifications">Cargando...</p></div>
+            </div>
+        </div>
+
+        <!-- TAB CONFIGURACIÓN -->
+        <div id="tabConfiguracion" class="container" style="display: none; grid-template-columns: 1fr;">
+            <div class="config-panel">
+                <div class="notifications-header">
+                    <h2>⚙️ Configuración de Pagos</h2>
+                    <button class="btn-mark-all" onclick="guardarConfiguracion()">💾 Guardar Cambios</button>
+                </div>
+                <div class="config-grid">
+                    <div>
+                        <h3 style="color:#e91e63; margin-bottom:20px;">📝 Datos Bancarios</h3>
+                        <div class="form-group"><label>🏦 Banco</label><input type="text" id="cfg_banco" placeholder="Nombre del banco"></div>
+                        <div class="form-group"><label>👤 Titular</label><input type="text" id="cfg_titular" placeholder="Nombre del titular"></div>
+                        <div class="form-group"><label>📋 N° Cuenta</label><input type="text" id="cfg_cuenta" placeholder="Número de cuenta"></div>
+                        <div class="form-group"><label>📋 NIT</label><input type="text" id="cfg_nit" placeholder="NIT"></div>
+                        <div class="form-group"><label>📱 Celular</label><input type="text" id="cfg_celular" placeholder="+591 12345678"></div>
+                        <div class="form-group"><label>📧 Correo</label><input type="text" id="cfg_correo" placeholder="correo@ejemplo.com"></div>
+                        <div class="form-group"><label>💬 WhatsApp (sin +)</label><input type="text" id="cfg_whatsapp" placeholder="59112345678"></div>
+                    </div>
+                    <div>
+                        <h3 style="color:#e91e63; margin-bottom:20px;">📱 Código QR del Banco</h3>
+                        <div class="qr-preview-container">
+                            <img id="qrPreview" src="" alt="QR" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22250%22 height=%22250%22><rect fill=%22%23fce4ec%22 width=%22250%22 height=%22250%22/><text fill=%22%23e91e63%22 x=%22125%22 y=%22125%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2218%22>Sin QR</text></svg>'">
+                            <div class="form-group" style="margin-top:15px;">
+                                <label>📷 Subir QR</label>
+                                <input type="file" id="qrFile" accept="image/*" onchange="previewQR(event)">
+                                <button onclick="subirQR()" class="btn-primary" style="margin-top:10px; width:100%;">📤 Subir Imagen QR</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api';
+        let currentEditId = null;
+
+        // ========== LOGIN ==========
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            const err = document.getElementById('loginError');
+            err.style.display = 'none';
+            try {
+                const res = await fetch(`${API_URL}/admin/login`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: u, password: p })
+                });
+                if (res.ok) {
+                    document.getElementById('loginSection').style.display = 'none';
+                    document.getElementById('adminPanel').style.display = 'block';
+                    cargarProductos();
+                    setInterval(actualizarContadorNotificaciones, 10000);
+                } else {
+                    err.textContent = '❌ Usuario o contraseña incorrectos';
+                    err.style.display = 'block';
+                }
+            } catch (e) {
+                err.textContent = '❌ Error de conexión';
+                err.style.display = 'block';
+            }
+        });
+
+        function logout() {
+            document.getElementById('loginSection').style.display = 'flex';
+            document.getElementById('adminPanel').style.display = 'none';
+            limpiarFormulario();
+        }
+
+        // ========== TABS ==========
+        function cambiarTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tabProductos').style.display = 'none';
+            document.getElementById('tabNotificaciones').style.display = 'none';
+            document.getElementById('tabConfiguracion').style.display = 'none';
+            if (tab === 'productos') {
+                document.getElementById('tabProductos').style.display = 'grid';
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                cargarProductos();
+            } else if (tab === 'notificaciones') {
+                document.getElementById('tabNotificaciones').style.display = 'grid';
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                cargarNotificaciones();
+            } else if (tab === 'configuracion') {
+                document.getElementById('tabConfiguracion').style.display = 'grid';
+                document.querySelectorAll('.tab-btn')[2].classList.add('active');
+                cargarConfiguracion();
+            }
+        }
+
+        // ========== PRODUCTOS ==========
+        async function cargarProductos() {
+            try {
+                const res = await fetch(`${API_URL}/productos`);
+                const prods = await res.json();
+                const grid = document.getElementById('productsGrid');
+                if (prods.length === 0) { grid.innerHTML = '<p style="text-align:center;color:#999;">📭 No hay productos</p>'; return; }
+                grid.innerHTML = prods.map(p => `
+                    <div class="product-card">
+                        ${p.imagen ? `<img src="http://localhost:3000/uploads/${p.imagen}" alt="${p.nombre}">` : '<div style="height:180px;background:#fce4ec;display:flex;align-items:center;justify-content:center;color:#e91e63;">Sin imagen</div>'}
+                        <div class="product-info">
+                            <span class="category">${p.categoria || 'General'}</span>
+                            <h3>${p.nombre}</h3>
+                            <p class="price">Bs ${parseFloat(p.precio).toFixed(2)}</p>
+                            <div class="card-actions">
+                                <button onclick="editarProducto(${p.id})" class="btn-edit">✏️</button>
+                                <button onclick="eliminarProducto(${p.id})" class="btn-delete">🗑️</button>
+                            </div>
+                        </div>
+                    </div>`).join('');
+            } catch (e) { document.getElementById('productsGrid').innerHTML = '<p style="text-align:center;color:red;">Error al cargar</p>'; }
+        }
+
+        document.getElementById('productForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fd = new FormData();
+            fd.append('nombre', document.getElementById('nombre').value);
+            fd.append('descripcion', document.getElementById('descripcion').value);
+            fd.append('precio', document.getElementById('precio').value);
+            fd.append('categoria', document.getElementById('categoria').value);
+            fd.append('talla', document.getElementById('talla').value);
+            fd.append('color', document.getElementById('color').value);
+            const img = document.getElementById('imagen').files[0];
+            const vid = document.getElementById('video').files[0];
+            if (img) fd.append('imagen', img);
+            if (vid) fd.append('video', vid);
+            const url = currentEditId ? `${API_URL}/productos/${currentEditId}` : `${API_URL}/productos`;
+            try {
+                const res = await fetch(url, { method: currentEditId ? 'PUT' : 'POST', body: fd });
+                if (res.ok) { alert('✅ Guardado'); limpiarFormulario(); cargarProductos(); }
+            } catch (e) { alert('❌ Error'); }
+        });
+
+        async function editarProducto(id) {
+            const res = await fetch(`${API_URL}/productos/${id}`);
+            const p = await res.json();
+            document.getElementById('formTitle').textContent = '✏️ Editar Producto';
+            document.getElementById('productId').value = p.id;
+            document.getElementById('nombre').value = p.nombre;
+            document.getElementById('descripcion').value = p.descripcion || '';
+            document.getElementById('precio').value = p.precio;
+            document.getElementById('categoria').value = p.categoria || '';
+            document.getElementById('talla').value = p.talla || '';
+            document.getElementById('color').value = p.color || '';
+            currentEditId = id;
+            scrollTo(0,0);
+        }
+
+        async function eliminarProducto(id) {
+            if (!confirm('⚠️ ¿Eliminar?')) return;
+            await fetch(`${API_URL}/productos/${id}`, { method: 'DELETE' });
+            alert('✅ Eliminado'); cargarProductos();
+        }
+
+        function limpiarFormulario() {
+            document.getElementById('productForm').reset();
+            document.getElementById('productId').value = '';
+            document.getElementById('formTitle').textContent = '➕ Agregar Nuevo Producto';
+            document.getElementById('imagenPreview').innerHTML = '';
+            document.getElementById('videoPreview').innerHTML = '';
+            currentEditId = null;
+        }
+
+        document.getElementById('imagen').addEventListener('change', function(e) {
+            const f = e.target.files[0];
+            if (f) { const r = new FileReader(); r.onload = e => document.getElementById('imagenPreview').innerHTML = `<img src="${e.target.result}">`; r.readAsDataURL(f); }
+        });
+        document.getElementById('video').addEventListener('change', function(e) {
+            const f = e.target.files[0];
+            if (f) { const r = new FileReader(); r.onload = e => document.getElementById('videoPreview').innerHTML = `<video src="${e.target.result}" controls></video>`; r.readAsDataURL(f); }
+        });
+
+        // ========== NOTIFICACIONES ==========
+        async function cargarNotificaciones() {
+            const res = await fetch(`${API_URL}/notificaciones`);
+            const notifs = await res.json();
+            const list = document.getElementById('notificationsList');
+            if (notifs.length === 0) { list.innerHTML = '<p class="no-notifications">📭 Sin notificaciones</p>'; return; }
+            list.innerHTML = notifs.map(n => `
+                <div class="notification-item ${n.leido ? 'leida' : 'no-leida'}">
+                    <div class="notification-content"><p class="mensaje">${n.mensaje}</p><p class="fecha">📅 ${new Date(n.fecha).toLocaleString('es-BO')}</p></div>
+                    <div class="notification-actions">
+                        ${!n.leido ? `<button class="btn-leer" onclick="marcarLeida(${n.id})">✓</button>` : ''}
+                        <button class="btn-eliminar-notif" onclick="eliminarNotificacion(${n.id})">🗑️</button>
+                    </div>
+                </div>`).join('');
+        }
+
+        async function actualizarContadorNotificaciones() {
+            const res = await fetch(`${API_URL}/notificaciones/no-leidas`);
+            const d = await res.json();
+            const badge = document.getElementById('notificationBadge');
+            const tabBadge = document.getElementById('tabBadge');
+            if (d.total > 0) {
+                badge.textContent = d.total; badge.style.display = 'inline';
+                tabBadge.textContent = `(${d.total})`;
+                document.querySelector('.notification-bell').classList.add('ring');
+                setTimeout(() => document.querySelector('.notification-bell').classList.remove('ring'), 500);
+            } else {
+                badge.style.display = 'none'; tabBadge.textContent = '';
+            }
+        }
+
+        async function marcarLeida(id) { await fetch(`${API_URL}/notificaciones/${id}/leer`, { method: 'PUT' }); cargarNotificaciones(); actualizarContadorNotificaciones(); }
+        async function marcarTodasLeidas() { await fetch(`${API_URL}/notificaciones/leer-todas`, { method: 'PUT' }); cargarNotificaciones(); actualizarContadorNotificaciones(); }
+        async function eliminarNotificacion(id) { if (!confirm('¿Eliminar?')) return; await fetch(`${API_URL}/notificaciones/${id}`, { method: 'DELETE' }); cargarNotificaciones(); actualizarContadorNotificaciones(); }
+
+        // ========== CONFIGURACIÓN ==========
+        async function cargarConfiguracion() {
+            const res = await fetch(`${API_URL}/configuracion`);
+            const c = await res.json();
+            document.getElementById('cfg_banco').value = c.banco_nombre || '';
+            document.getElementById('cfg_titular').value = c.banco_titular || '';
+            document.getElementById('cfg_cuenta').value = c.banco_cuenta || '';
+            document.getElementById('cfg_nit').value = c.banco_nit || '';
+            document.getElementById('cfg_celular').value = c.banco_celular || '';
+            document.getElementById('cfg_correo').value = c.banco_correo || '';
+            document.getElementById('cfg_whatsapp').value = c.whatsapp_numero || '';
+            if (c.qr_imagen) document.getElementById('qrPreview').src = `http://localhost:3000/uploads/${c.qr_imagen}`;
+        }
+
+        async function guardarConfiguracion() {
+            const datos = {
+                banco_nombre: document.getElementById('cfg_banco').value,
+                banco_titular: document.getElementById('cfg_titular').value,
+                banco_cuenta: document.getElementById('cfg_cuenta').value,
+                banco_nit: document.getElementById('cfg_nit').value,
+                banco_celular: document.getElementById('cfg_celular').value,
+                banco_correo: document.getElementById('cfg_correo').value,
+                whatsapp_numero: document.getElementById('cfg_whatsapp').value
+            };
+            await fetch(`${API_URL}/configuracion`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) });
+            alert('✅ Configuración guardada');
+        }
+
+        function previewQR(event) {
+            const f = event.target.files[0];
+            if (f) { const r = new FileReader(); r.onload = e => document.getElementById('qrPreview').src = e.target.result; r.readAsDataURL(f); }
+        }
+
+        async function subirQR() {
+            const f = document.getElementById('qrFile').files[0];
+            if (!f) { alert('Selecciona una imagen'); return; }
+            const fd = new FormData(); fd.append('qr_imagen', f);
+            const res = await fetch(`${API_URL}/configuracion/qr-imagen`, { method: 'POST', body: fd });
+            if (res.ok) { const d = await res.json(); document.getElementById('qrPreview').src = `http://localhost:3000/uploads/${d.imagen}`; alert('✅ QR subido'); }
+        }
+
+        console.log('✨ Andreita Moda Admin - Completo');
+    </script>
+</body>
+</html>
