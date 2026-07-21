@@ -1,72 +1,100 @@
-const sqlite3 = require('sqlite3').verbose();
+const fs = require('fs');
 const path = require('path');
 
-const dbPath = path.join(__dirname, '..', 'database.db');
-const db = new sqlite3.Database(dbPath);
+const dbPath = path.join(__dirname, '..', 'data.json');
 
-db.serialize(() => {
-    db.run(`CREATE TABLE IF NOT EXISTS productos (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nombre TEXT NOT NULL,
-        descripcion TEXT,
-        precio REAL NOT NULL,
-        categoria TEXT,
-        talla TEXT,
-        color TEXT,
-        imagen TEXT,
-        video TEXT,
-        destacado INTEGER DEFAULT 0,
-        fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`);
+let data = {
+    productos: [],
+    usuarios: [
+        { id: 1, username: 'admin', password: 'admin123', rol: 'admin' },
+        { id: 2, username: 'Paola', password: '042006', rol: 'admin' }
+    ],
+    notificaciones: [],
+    configuracion: { id: 1, qr_imagen: null, banco_nombre: '', cuenta_titular: '', numero_cuenta: '', whatsapp: '' }
+};
 
-    db.run(`CREATE TABLE IF NOT EXISTS usuarios (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL,
-        rol TEXT DEFAULT 'cliente'
-    )`);
-
-    db.run(`CREATE TABLE IF NOT EXISTS notificaciones (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        producto_id INTEGER,
-        producto_nombre TEXT,
-        producto_precio REAL,
-        cliente_ip TEXT,
-        mensaje TEXT,
-        leido INTEGER DEFAULT 0,
-        fecha DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`);
-
-    db.run(`CREATE TABLE IF NOT EXISTS configuracion (
-        id INTEGER PRIMARY KEY CHECK (id = 1),
-        qr_imagen TEXT,
-        banco_nombre TEXT,
-        cuenta_titular TEXT,
-        numero_cuenta TEXT,
-        whatsapp TEXT
-    )`);
-
-    // Insertar admin
-    db.get('SELECT id FROM usuarios WHERE username = ?', ['admin'], (err, row) => {
-        if (!row) {
-            db.run('INSERT INTO usuarios (username, password, rol) VALUES (?, ?, ?)', ['admin', 'admin123', 'admin']);
+if (fs.existsSync(dbPath)) {
+    try {
+        const fileData = JSON.parse(fs.readFileSync(dbPath, 'utf8'));
+        data = { ...data, ...fileData };
+        if (!data.configuracion || !data.configuracion.id) {
+            data.configuracion = { id: 1, qr_imagen: null, banco_nombre: '', cuenta_titular: '', numero_cuenta: '', whatsapp: '' };
         }
-    });
+    } catch (e) {
+        fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
+    }
+} else {
+    fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
+}
 
-    // Insertar Paola
-    db.get('SELECT id FROM usuarios WHERE username = ?', ['Paola'], (err, row) => {
-        if (!row) {
-            db.run('INSERT INTO usuarios (username, password, rol) VALUES (?, ?, ?)', ['Paola', '042006', 'admin']);
+function saveData() {
+    fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
+}
+
+const db = {
+    productos: {
+        getAll: () => [...data.productos].sort((a, b) => b.id - a.id),
+        getById: (id) => data.productos.find(p => p.id == id) || null,
+        create: (producto) => {
+            const id = data.productos.length > 0 ? Math.max(...data.productos.map(p => p.id)) + 1 : 1;
+            const nuevo = { id, ...producto, fecha_creacion: new Date().toISOString() };
+            data.productos.push(nuevo);
+            saveData();
+            return nuevo;
+        },
+        update: (id, updates) => {
+            const index = data.productos.findIndex(p => p.id == id);
+            if (index !== -1) {
+                data.productos[index] = { ...data.productos[index], ...updates };
+                saveData();
+                return data.productos[index];
+            }
+            return null;
+        },
+        delete: (id) => {
+            const before = data.productos.length;
+            data.productos = data.productos.filter(p => p.id != id);
+            saveData();
+            return before !== data.productos.length;
         }
-    });
-
-    // Insertar config
-    db.get('SELECT id FROM configuracion WHERE id = 1', (err, row) => {
-        if (!row) {
-            db.run('INSERT INTO configuracion (id) VALUES (1)');
+    },
+    usuarios: {
+        findByLogin: (username, password, rol) => 
+            data.usuarios.find(u => u.username === username && u.password === password && u.rol === rol) || null
+    },
+    notificaciones: {
+        getAll: () => [...data.notificaciones].sort((a, b) => b.id - a.id),
+        noLeidas: () => data.notificaciones.filter(n => !n.leido).length,
+        create: (noti) => {
+            const id = data.notificaciones.length > 0 ? Math.max(...data.notificaciones.map(n => n.id)) + 1 : 1;
+            const nueva = { id, ...noti, leido: false, fecha: new Date().toISOString() };
+            data.notificaciones.push(nueva);
+            saveData();
+            return nueva;
+        },
+        marcarLeida: (id) => {
+            const n = data.notificaciones.find(n => n.id == id);
+            if (n) { n.leido = true; saveData(); return true; }
+            return false;
+        },
+        marcarTodasLeidas: () => {
+            data.notificaciones.forEach(n => n.leido = true);
+            saveData();
+        },
+        delete: (id) => {
+            data.notificaciones = data.notificaciones.filter(n => n.id != id);
+            saveData();
         }
-    });
-});
+    },
+    configuracion: {
+        get: () => data.configuracion,
+        update: (updates) => {
+            data.configuracion = { ...data.configuracion, ...updates };
+            saveData();
+            return data.configuracion;
+        }
+    }
+};
 
-console.log('Base de datos SQLite lista ✓');
+console.log('Base de datos JSON lista ✓');
 module.exports = db;

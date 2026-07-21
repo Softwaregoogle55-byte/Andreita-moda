@@ -24,6 +24,7 @@ app.use('/api/productos', productosRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/notificaciones', notificacionesRoutes);
 app.use('/api/configuracion', configuracionRoutes);
+app.use('/api/configuracion', configuracionRoutes);
 
 // Tienda
 app.get('/', (req, res) => {

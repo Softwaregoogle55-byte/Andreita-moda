@@ -1,0 +1,26 @@
+{
+  "productos": [],
+  "usuarios": [
+    {
+      "id": 1,
+      "username": "admin",
+      "password": "admin123",
+      "rol": "admin"
+    },
+    {
+      "id": 2,
+      "username": "Paola",
+      "password": "042006",
+      "rol": "admin"
+    }
+  ],
+  "notificaciones": [],
+  "configuracion": {
+    "id": 1,
+    "qr_imagen": null,
+    "banco_nombre": "",
+    "cuenta_titular": "",
+    "numero_cuenta": "",
+    "whatsapp": ""
+  }
+}
