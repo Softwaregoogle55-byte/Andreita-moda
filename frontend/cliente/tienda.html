@@ -165,7 +165,7 @@
                         <p><strong>👤 Titular:</strong> ${c.cuenta_titular||'No especificado'}</p>
                         <p><strong>🔢 Cuenta:</strong> ${c.numero_cuenta||'No especificado'}</p>
                         <p style="font-size:1.5em;color:#e91e63;font-weight:bold;margin:15px 0">Total: Bs ${total.toFixed(2)}</p>
-                        ${c.whatsapp ? `<a href="https://wa.me/${c.whatsapp}?text=Hola%20Andreita%20Moda,%20confirmo%20mi%20compra%20por%20Bs%20${total.toFixed(2)}" target="_blank" style="display:inline-block;padding:12px 30px;background:#25D366;color:white;border-radius:25px;text-decoration:none;font-weight:bold;margin-top:10px">📱 Enviar comprobante</a>` : ''}`;
+                        ${c.whatsapp ? `<a href="https://wa.me/60036671${c.whatsapp}?text=Hola%20Andreita%20Moda,%20confirmo%20mi%20compra%20por%20Bs%20${total.toFixed(2)}" target="_blank" style="display:inline-block;padding:12px 30px;background:#25D366;color:white;border-radius:25px;text-decoration:none;font-weight:bold;margin-top:10px">📱 Enviar comprobante</a>` : ''}`;
                     document.getElementById('productModal').style.display = 'block';
                     carrito = [];
                     document.getElementById('cartCount').textContent = '0';
