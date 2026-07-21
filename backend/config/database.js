@@ -1,39 +1,72 @@
-const express = require('express');
-const router = express.Router();
-const db = require('../config/database');
-const multer = require('multer');
+const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, 'uploads/'),
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + path.extname(file.originalname));
-    }
+const dbPath = path.join(__dirname, '..', 'database.db');
+const db = new sqlite3.Database(dbPath);
+
+db.serialize(() => {
+    db.run(`CREATE TABLE IF NOT EXISTS productos (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nombre TEXT NOT NULL,
+        descripcion TEXT,
+        precio REAL NOT NULL,
+        categoria TEXT,
+        talla TEXT,
+        color TEXT,
+        imagen TEXT,
+        video TEXT,
+        destacado INTEGER DEFAULT 0,
+        fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS usuarios (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        rol TEXT DEFAULT 'cliente'
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS notificaciones (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        producto_id INTEGER,
+        producto_nombre TEXT,
+        producto_precio REAL,
+        cliente_ip TEXT,
+        mensaje TEXT,
+        leido INTEGER DEFAULT 0,
+        fecha DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS configuracion (
+        id INTEGER PRIMARY KEY CHECK (id = 1),
+        qr_imagen TEXT,
+        banco_nombre TEXT,
+        cuenta_titular TEXT,
+        numero_cuenta TEXT,
+        whatsapp TEXT
+    )`);
+
+    // Insertar admin
+    db.get('SELECT id FROM usuarios WHERE username = ?', ['admin'], (err, row) => {
+        if (!row) {
+            db.run('INSERT INTO usuarios (username, password, rol) VALUES (?, ?, ?)', ['admin', 'admin123', 'admin']);
+        }
+    });
+
+    // Insertar Paola
+    db.get('SELECT id FROM usuarios WHERE username = ?', ['Paola'], (err, row) => {
+        if (!row) {
+            db.run('INSERT INTO usuarios (username, password, rol) VALUES (?, ?, ?)', ['Paola', '042006', 'admin']);
+        }
+    });
+
+    // Insertar config
+    db.get('SELECT id FROM configuracion WHERE id = 1', (err, row) => {
+        if (!row) {
+            db.run('INSERT INTO configuracion (id) VALUES (1)');
+        }
+    });
 });
-const upload = multer({ storage });
 
-// Obtener configuración
-router.get('/', (req, res) => {
-    const config = db.prepare('SELECT * FROM configuracion WHERE id = 1').get();
-    res.json(config || {});
-});
-
-// Actualizar configuración (incluye imagen QR)
-router.put('/', upload.single('qr_imagen'), (req, res) => {
-    const { banco_nombre, cuenta_titular, numero_cuenta, whatsapp } = req.body;
-    let qr_imagen = req.body.qr_imagen_actual || null;
-    if (req.file) {
-        qr_imagen = req.file.filename;
-    }
-
-    const stmt = db.prepare(`UPDATE configuracion SET
-        qr_imagen = ?, banco_nombre = ?, cuenta_titular = ?,
-        numero_cuenta = ?, whatsapp = ?
-        WHERE id = 1`);
-    stmt.run(qr_imagen, banco_nombre, cuenta_titular, numero_cuenta, whatsapp);
-
-    res.json({ success: true, message: 'Configuración actualizada' });
-});
-
-module.exports = router;
+console.log('Base de datos SQLite lista ✓');
+module.exports = db;
