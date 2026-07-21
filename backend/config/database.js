@@ -1,49 +1,39 @@
-const Database = require('better-sqlite3');
+const express = require('express');
+const router = express.Router();
+const db = require('../config/database');
+const multer = require('multer');
 const path = require('path');
 
-const db = new Database(path.join(__dirname, '..', 'database.db'));
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, 'uploads/'),
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + path.extname(file.originalname));
+    }
+});
+const upload = multer({ storage });
 
-db.exec(`
-    CREATE TABLE IF NOT EXISTS productos (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nombre TEXT NOT NULL,
-        descripcion TEXT,
-        precio REAL NOT NULL,
-        categoria TEXT,
-        talla TEXT,
-        color TEXT,
-        imagen TEXT,
-        video TEXT,
-        destacado INTEGER DEFAULT 0,
-        fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
+// Obtener configuración
+router.get('/', (req, res) => {
+    const config = db.prepare('SELECT * FROM configuracion WHERE id = 1').get();
+    res.json(config || {});
+});
 
-    CREATE TABLE IF NOT EXISTS usuarios (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL,
-        rol TEXT DEFAULT 'cliente'
-    );
+// Actualizar configuración (incluye imagen QR)
+router.put('/', upload.single('qr_imagen'), (req, res) => {
+    const { banco_nombre, cuenta_titular, numero_cuenta, whatsapp } = req.body;
+    let qr_imagen = req.body.qr_imagen_actual || null;
+    if (req.file) {
+        qr_imagen = req.file.filename;
+    }
 
-    CREATE TABLE IF NOT EXISTS notificaciones (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        producto_id INTEGER,
-        producto_nombre TEXT,
-        producto_precio REAL,
-        cliente_ip TEXT,
-        mensaje TEXT,
-        leido INTEGER DEFAULT 0,
-        fecha DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-`);
+    const stmt = db.prepare(`UPDATE configuracion SET
+        qr_imagen = ?, banco_nombre = ?, cuenta_titular = ?,
+        numero_cuenta = ?, whatsapp = ?
+        WHERE id = 1`);
+    stmt.run(qr_imagen, banco_nombre, cuenta_titular, numero_cuenta, whatsapp);
 
-const adminExists = db.prepare('SELECT * FROM usuarios WHERE username = ?').get('admin');
-if (!adminExists) {
-    db.prepare('INSERT INTO usuarios (username, password, rol) VALUES (?, ?, ?)').run('admin', 'admin123', 'admin');
-}
+    res.json({ success: true, message: 'Configuración actualizada' });
+});
 
-// Resetear contraseña del admin
-db.prepare("UPDATE usuarios SET password = 'admin123' WHERE username = 'admin'").run();
-console.log('Contraseña de admin restablecida a: admin123');
-
-module.exports = db;
+module.exports = router;

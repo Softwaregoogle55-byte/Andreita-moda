@@ -58,8 +58,13 @@ router.put('/:id', upload.fields([{ name: 'imagen' }, { name: 'video' }]), (req,
         const imagen = req.files?.imagen?.[0]?.filename || null;
         const video = req.files?.video?.[0]?.filename || null;
         
-        const stmt = db.prepare('UPDATE productos SET nombre=?, descripcion=?, precio=?, categoria=?, talla=?, color=?, imagen=COALESCE(?, imagen), video=COALESCE(?, video) WHERE id=?');
-        stmt.run(nombre, descripcion, precio, categoria, talla, color, imagen, video, req.params.id);
+        if (imagen) {
+            db.prepare('UPDATE productos SET nombre=?, descripcion=?, precio=?, categoria=?, talla=?, color=?, imagen=?, video=COALESCE(?, video) WHERE id=?')
+              .run(nombre, descripcion, precio, categoria, talla, color, imagen, video, req.params.id);
+        } else {
+            db.prepare('UPDATE productos SET nombre=?, descripcion=?, precio=?, categoria=?, talla=?, color=?, video=COALESCE(?, video) WHERE id=?')
+              .run(nombre, descripcion, precio, categoria, talla, color, video, req.params.id);
+        }
         
         res.json({ success: true });
     } catch (err) {

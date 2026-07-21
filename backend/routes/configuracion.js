@@ -4,88 +4,39 @@ const db = require('../config/database');
 const multer = require('multer');
 const path = require('path');
 
-// Configurar multer para imágenes QR
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
+    destination: (req, file, cb) => cb(null, 'uploads/'),
     filename: (req, file, cb) => {
-        cb(null, 'qr-banco-' + Date.now() + path.extname(file.originalname));
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + path.extname(file.originalname));
     }
 });
 
-const upload = multer({ 
-    storage: storage,
-    fileFilter: (req, file, cb) => {
-        if (file.mimetype.startsWith('image/')) {
-            cb(null, true);
-        } else {
-            cb(new Error('Solo imágenes permitidas'));
-        }
-    }
-});
+const upload = multer({ storage });
 
-// Obtener toda la configuración
+// Obtener configuración
 router.get('/', (req, res) => {
-    const query = 'SELECT * FROM configuracion';
-    db.query(query, (err, results) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        
-        // Convertir a objeto clave-valor
-        const config = {};
-        results.forEach(row => {
-            config[row.clave] = row.valor;
-        });
-        res.json(config);
-    });
-});
-
-// Actualizar configuración de texto
-router.put('/', (req, res) => {
-    const updates = req.body;
-    let completed = 0;
-    let errors = [];
-    
-    Object.keys(updates).forEach(clave => {
-        const query = 'UPDATE configuracion SET valor = ? WHERE clave = ?';
-        db.query(query, [updates[clave], clave], (err) => {
-            if (err) {
-                errors.push({ clave, error: err.message });
-            }
-            completed++;
-            
-            if (completed === Object.keys(updates).length) {
-                if (errors.length > 0) {
-                    res.status(400).json({ errors });
-                } else {
-                    res.json({ message: 'Configuración actualizada ✓' });
-                }
-            }
-        });
-    });
-});
-
-// Subir imagen QR
-router.post('/qr-imagen', upload.single('qr_imagen'), (req, res) => {
-    if (!req.file) {
-        return res.status(400).json({ error: 'No se subió ninguna imagen' });
+    try {
+        const config = db.prepare('SELECT * FROM configuracion WHERE id = 1').get();
+        res.json(config || {});
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-    
-    const imagenNombre = req.file.filename;
-    
-    // Guardar en la base de datos
-    const query = 'UPDATE configuracion SET valor = ? WHERE clave = ?';
-    db.query(query, [imagenNombre, 'qr_imagen'], (err) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        res.json({ 
-            message: 'QR actualizado ✓',
-            imagen: imagenNombre 
-        });
-    });
+});
+
+// Actualizar configuración
+router.put('/', upload.single('qr_imagen'), (req, res) => {
+    try {
+        const { banco_nombre, cuenta_titular, numero_cuenta, whatsapp, qr_imagen_actual } = req.body;
+        const qr_imagen = req.file ? req.file.filename : (qr_imagen_actual || null);
+
+        const stmt = db.prepare('UPDATE configuracion SET qr_imagen=?, banco_nombre=?, cuenta_titular=?, numero_cuenta=?, whatsapp=? WHERE id=1');
+        stmt.run(qr_imagen, banco_nombre || '', cuenta_titular || '', numero_cuenta || '', whatsapp || '');
+
+        res.json({ success: true, message: 'Configuración guardada ✓' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 module.exports = router;

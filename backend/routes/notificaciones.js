@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/database');
 
+// Obtener todas
 router.get('/', (req, res) => {
     try {
         const notificaciones = db.prepare('SELECT * FROM notificaciones ORDER BY fecha DESC').all();
@@ -11,6 +12,7 @@ router.get('/', (req, res) => {
     }
 });
 
+// No leídas
 router.get('/no-leidas', (req, res) => {
     try {
         const count = db.prepare('SELECT COUNT(*) as total FROM notificaciones WHERE leido = 0').get();
@@ -20,6 +22,7 @@ router.get('/no-leidas', (req, res) => {
     }
 });
 
+// Crear
 router.post('/', (req, res) => {
     try {
         const { producto_id, producto_nombre, producto_precio, cliente_ip } = req.body;
@@ -34,6 +37,7 @@ router.post('/', (req, res) => {
     }
 });
 
+// Marcar leída
 router.put('/:id/leer', (req, res) => {
     try {
         db.prepare('UPDATE notificaciones SET leido = 1 WHERE id = ?').run(req.params.id);
@@ -43,6 +47,7 @@ router.put('/:id/leer', (req, res) => {
     }
 });
 
+// Marcar todas leídas
 router.put('/leer-todas', (req, res) => {
     try {
         db.prepare('UPDATE notificaciones SET leido = 1 WHERE leido = 0').run();
@@ -52,6 +57,7 @@ router.put('/leer-todas', (req, res) => {
     }
 });
 
+// Eliminar
 router.delete('/:id', (req, res) => {
     try {
         db.prepare('DELETE FROM notificaciones WHERE id = ?').run(req.params.id);

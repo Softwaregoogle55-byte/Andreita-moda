@@ -10,35 +10,35 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Servir uploads
+// Servir archivos
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(express.static(path.join(__dirname, '..', 'frontend'), { index: false }));
 
-// Servir frontend completo
-app.use(express.static(path.join(__dirname, '..', 'frontend')));
-
-// Importar rutas API
+// Rutas API
 const productosRoutes = require('./routes/productos');
 const adminRoutes = require('./routes/admin');
 const notificacionesRoutes = require('./routes/notificaciones');
+const configuracionRoutes = require('./routes/configuracion');
 
 app.use('/api/productos', productosRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/notificaciones', notificacionesRoutes);
+app.use('/api/configuracion', configuracionRoutes);
 
-// Ruta del admin
-app.get('/admin', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'frontend', 'admin', 'index.html'));
-});
-
-// Ruta principal - Tienda
+// Tienda
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'frontend', 'cliente', 'tienda.html'));
 });
 
-// Iniciar servidor
+// Admin
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'frontend', 'admin', 'index.html'));
+});
+
 app.listen(PORT, () => {
     console.log('=================================');
     console.log('  ✨ Andreita Moda ✨');
-    console.log('  Puerto: ' + PORT);
+    console.log('  Tienda: http://localhost:' + PORT + '/');
+    console.log('  Admin:  http://localhost:' + PORT + '/admin');
     console.log('=================================');
 });
