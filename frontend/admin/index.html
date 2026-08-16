@@ -5,85 +5,446 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Andreita Moda - Admin</title>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#f093fb,#f5576c);min-height:100vh}
-        .login-container{display:flex;justify-content:center;align-items:center;min-height:100vh}
-        .login-box{background:white;padding:40px;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center;width:400px}
-        .login-box h1{color:#e91e63;font-size:2.5em;margin-bottom:10px}
-        .login-box h2{color:#666;margin-bottom:30px}
-        .login-box input{width:100%;padding:12px;margin:10px 0;border:2px solid #e0e0e0;border-radius:8px;font-size:16px}
-        .login-box button{width:100%;padding:12px;background:linear-gradient(135deg,#f093fb,#f5576c);color:white;border:none;border-radius:8px;font-size:18px;font-weight:bold;cursor:pointer;margin-top:20px}
-        .error-msg{color:red;margin-top:10px;display:none}
-        .admin-panel{background:#f5f5f5;min-height:100vh}
-        header{background:white;padding:15px 30px;box-shadow:0 2px 10px rgba(0,0,0,.1);display:flex;justify-content:space-between;align-items:center}
-        header h1{color:#e91e63;font-size:1.5em}
-        .header-right{display:flex;align-items:center;gap:15px}
-        .notification-bell{position:relative;cursor:pointer;font-size:1.8em}
-        .notification-badge{position:absolute;top:-8px;right:-8px;background:red;color:white;border-radius:50%;padding:2px 7px;font-size:.4em;font-weight:bold}
-        .notification-badge:empty{display:none}
-        .btn-logout{padding:10px 20px;background:#dc3545;color:white;border:none;border-radius:5px;cursor:pointer;font-weight:bold}
-        .tabs{display:flex;gap:5px;padding:20px 30px 0;background:#f5f5f5}
-        .tab-btn{padding:12px 25px;background:#ddd;border:none;border-radius:10px 10px 0 0;cursor:pointer;font-weight:bold;font-size:.95em}
-        .tab-btn.active{background:white;color:#e91e63}
-        .container{max-width:1400px;margin:0 auto;padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
-        .form-box,.list-box{background:white;padding:30px;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,.1)}
-        .form-box h2,.list-box h2{color:#e91e63;margin-bottom:20px}
-        .form-group{margin-bottom:15px}
-        .form-group label{display:block;margin-bottom:5px;color:#333;font-weight:500}
-        .form-group input,.form-group textarea,.form-group select{width:100%;padding:10px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit}
-        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:15px}
-        .form-actions{display:flex;gap:10px;margin-top:20px}
-        .btn-primary{padding:12px 30px;background:linear-gradient(135deg,#f093fb,#f5576c);color:white;border:none;border-radius:8px;font-size:16px;font-weight:bold;cursor:pointer;flex:1}
-        .btn-secondary{padding:12px 30px;background:#6c757d;color:white;border:none;border-radius:8px;cursor:pointer}
-        .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:15px}
-        .product-card{background:#fff5f7;border-radius:10px;overflow:hidden;border:1px solid #fce4ec}
-        .product-card img{width:100%;height:180px;object-fit:cover}
-        .product-info{padding:15px}
-        .product-info h3{margin-bottom:8px;color:#333;font-size:1em}
-        .product-info .price{font-size:1.3em;color:#e91e63;font-weight:bold;margin-bottom:8px}
-        .card-actions{display:flex;gap:8px}
-        .card-actions button{flex:1;padding:8px;border:none;border-radius:5px;cursor:pointer;font-weight:bold;font-size:.85em}
-        .btn-edit{background:#ffc107;color:#333}
-        .btn-delete{background:#dc3545;color:white}
-        .notifications-panel{background:white;padding:30px;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,.1)}
-        .notifications-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
-        .notifications-header h2{color:#e91e63}
-        .btn-mark-all{padding:8px 15px;background:#28a745;color:white;border:none;border-radius:5px;cursor:pointer;font-size:.9em}
-        .notification-item{display:flex;justify-content:space-between;align-items:center;padding:15px;margin-bottom:10px;border-radius:10px;border-left:4px solid #e91e63}
-        .notification-item.no-leida{background:#fff5f7;font-weight:500}
-        .notification-item.leida{background:#f9f9f9;opacity:.7}
-        .notification-content .mensaje{font-size:1em;color:#333;margin-bottom:5px}
-        .notification-content .fecha{font-size:.8em;color:#999}
-        .notification-actions{display:flex;gap:8px}
-        .btn-leer{padding:5px 10px;background:#007bff;color:white;border:none;border-radius:5px;cursor:pointer;font-size:.8em}
-        .btn-eliminar{padding:5px 10px;background:#dc3545;color:white;border:none;border-radius:5px;cursor:pointer;font-size:.8em}
-        .qr-preview img{max-width:200px;border-radius:10px;margin:10px 0}
-        @media(max-width:1024px){.container{grid-template-columns:1fr}}
-        @media(max-width:600px){.form-row{grid-template-columns:1fr}.login-box{width:90%}}
+        :root {
+            --rosa: #e91e63;
+            --azul: #2196F3;
+            --fondo: #f0f2f5;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* ========== LOGIN ========== */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: white;
+            padding: 45px;
+            border-radius: 24px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .login-box .logo-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #fce4ec;
+            margin-bottom: 15px;
+        }
+
+        .login-box h1 {
+            font-size: 1.8em;
+            background: linear-gradient(135deg, #667eea, #e91e63);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 5px;
+        }
+
+        .login-box h2 {
+            color: #888;
+            font-weight: 500;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            border: 2px solid #e8e8e8;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+
+        .login-box input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+
+        .login-box button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102,126,234,0.4);
+        }
+
+        .error-msg {
+            color: #e74c3c;
+            margin-top: 12px;
+            display: none;
+            font-size: 0.9em;
+        }
+
+        /* ========== PANEL ========== */
+        .admin-panel {
+            background: var(--fondo);
+            min-height: 100vh;
+        }
+
+        header {
+            background: white;
+            padding: 12px 30px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-left img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #fce4ec;
+        }
+
+        header h1 {
+            font-size: 1.2em;
+            color: #333;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+            font-size: 1.5em;
+            transition: 0.3s;
+        }
+
+        .notification-bell:hover { transform: scale(1.1); }
+
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.5em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-badge:empty { display: none; }
+
+        .btn-logout {
+            padding: 10px 22px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-logout:hover { background: #c0392b; }
+
+        /* ========== TABS ========== */
+        .tabs {
+            display: flex;
+            gap: 5px;
+            padding: 20px 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 22px;
+            background: rgba(255,255,255,0.5);
+            border: none;
+            border-radius: 12px 12px 0 0;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: 0.3s;
+        }
+
+        .tab-btn.active { background: white; color: #667eea; }
+        .tab-btn:hover { background: white; }
+
+        /* ========== CONTENEDOR ========== */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 25px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+        }
+
+        .card h2 {
+            margin-bottom: 25px;
+            color: #333;
+            font-size: 1.2em;
+        }
+
+        /* ========== FORMULARIO ========== */
+        .form-group { margin-bottom: 18px; }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #555;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 11px;
+            border: 2px solid #e8e8e8;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .btn-primary {
+            padding: 13px 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            flex: 1;
+            transition: 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102,126,234,0.3);
+        }
+
+        .btn-secondary {
+            padding: 13px 30px;
+            background: #95a5a6;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-secondary:hover { background: #7f8c8d; }
+
+        /* ========== GRID PRODUCTOS ========== */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+            gap: 15px;
+        }
+
+        .product-card {
+            background: #fafafa;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #eee;
+            transition: 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .product-info { padding: 15px; }
+
+        .product-info .cat-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .badge-damas { background: var(--rosa); }
+        .badge-varones { background: var(--azul); }
+
+        .product-info h3 {
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .product-info .price {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .card-actions { display: flex; gap: 6px; }
+
+        .card-actions button {
+            flex: 1;
+            padding: 7px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8em;
+        }
+
+        .btn-edit { background: #f39c12; color: white; }
+        .btn-delete { background: #e74c3c; color: white; }
+
+        /* ========== NOTIFICACIONES ========== */
+        .notif-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .notif-item.no-leida { background: #f0f2ff; }
+        .notif-item.leida { background: #fafafa; opacity: 0.7; }
+
+        .notif-content .mensaje { font-size: 0.95em; color: #333; }
+        .notif-content .fecha { font-size: 0.78em; color: #999; margin-top: 3px; }
+
+        .btn-mark-all {
+            padding: 8px 16px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85em;
+        }
+
+        /* ========== CONFIG QR ========== */
+        .qr-preview img {
+            max-width: 180px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border: 2px solid #eee;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 1024px) {
+            .container { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 600px) {
+            .form-row { grid-template-columns: 1fr; }
+            .login-box { padding: 30px; }
+            header h1 { font-size: 1em; }
+            .tabs { padding: 15px 15px 0; }
+        }
     </style>
 </head>
 <body>
-    <!-- Login -->
+
+    <!-- ==================== LOGIN ==================== -->
     <div id="loginSection" class="login-container">
         <div class="login-box">
-            <h1>✨ Andreita Moda</h1>
-            <h2>Panel Administrativo</h2>
-        <form id="loginForm" onsubmit="return false;">
-            <input type="text" id="username" placeholder="👤 Usuario">
+            <img src="https://cdn.phototourl.com/free/2026-08-16-1600c8b6-d670-4973-a77c-d5a72c7d291e.png" alt="Andreita Moda" class="logo-img" onerror="this.style.display='none'">
+            <h1>Andreita Moda</h1>
+            <h2>Panel de Administración</h2>
+            <input type="text" id="username" placeholder="👤 Usuario" autocomplete="off">
             <input type="password" id="password" placeholder="🔑 Contraseña">
-        </form>
-        <p id="loginError" class="error-msg"></p>
             <button onclick="login()">Iniciar Sesión</button>
             <p id="loginError" class="error-msg"></p>
         </div>
     </div>
 
-    <!-- Admin Panel -->
+    <!-- ==================== PANEL ==================== -->
     <div id="adminPanel" class="admin-panel" style="display:none">
         <header>
-            <h1>✨ Andreita Moda - Admin</h1>
+            <div class="header-left">
+                <img src="https://cdn.phototourl.com/free/2026-08-16-1600c8b6-d670-4973-a77c-d5a72c7d291e.png" alt="Logo" onerror="this.style.display='none'">
+                <h1>Andreita Moda - Admin</h1>
+            </div>
             <div class="header-right">
-                <div class="notification-bell" onclick="cambiarTab('notificaciones')">🔔<span id="notificationBadge" class="notification-badge"></span></div>
+                <div class="notification-bell" onclick="cambiarTab('notificaciones')">
+                    🔔<span id="notificationBadge" class="notification-badge"></span>
+                </div>
                 <button class="btn-logout" onclick="logout()">🚪 Salir</button>
             </div>
         </header>
@@ -94,75 +455,123 @@
             <button class="tab-btn" onclick="cambiarTab('configuracion')">⚙️ Configuración</button>
         </div>
 
-        <!-- Productos -->
+        <!-- PRODUCTOS -->
         <div id="tabProductos" class="container">
-            <div class="form-box">
+            <div class="card">
                 <h2 id="formTitle">➕ Agregar Producto</h2>
                 <input type="hidden" id="productId">
-                <div class="form-group"><label>Nombre *</label><input type="text" id="nombre" required></div>
-                <div class="form-group"><label>Descripción</label><textarea id="descripcion" rows="3"></textarea></div>
-                <div class="form-row">
-                    <div class="form-group"><label>Precio (Bs) *</label><input type="number" id="precio" step="0.01" required></div>
-                    <div class="form-group"><label>Categoría</label><select id="categoria"><option value="">Seleccionar</option><option value="vestidos">Vestidos</option><option value="blusas">Blusas</option><option value="pantalones">Pantalones</option><option value="faldas">Faldas</option><option value="accesorios">Accesorios</option><option value="chaquetas">Chaquetas</option></select></div>
+                <div class="form-group">
+                    <label>Nombre *</label>
+                    <input type="text" id="nombre" required placeholder="Ej: Vestido Floral">
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea id="descripcion" rows="2" placeholder="Describe el producto..."></textarea>
                 </div>
                 <div class="form-row">
-                    <div class="form-group"><label>Talla</label><select id="talla"><option value="">Seleccionar</option><option value="XS">XS</option><option value="S">S</option><option value="M">M</option><option value="L">L</option><option value="XL">XL</option></select></div>
-                    <div class="form-group"><label>Color</label><input type="text" id="color"></div>
+                    <div class="form-group">
+                        <label>Precio (Bs) *</label>
+                        <input type="number" id="precio" step="0.01" required placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Categoría *</label>
+                        <select id="categoria" required>
+                            <option value="">Seleccionar</option>
+                            <option value="damas">👩 Damas</option>
+                            <option value="varones">👨 Varones</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group"><label>📷 Imagen</label><input type="file" id="imagen" accept="image/*"></div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Talla</label>
+                        <select id="talla">
+                            <option value="">Seleccionar</option>
+                            <option value="XS">XS</option>
+                            <option value="S">S</option>
+                            <option value="M">M</option>
+                            <option value="L">L</option>
+                            <option value="XL">XL</option>
+                            <option value="XXL">XXL</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Color</label>
+                        <input type="text" id="color" placeholder="Ej: Rojo, Azul...">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>📷 Imagen</label>
+                    <input type="file" id="imagen" accept="image/*">
+                </div>
                 <div class="form-actions">
                     <button class="btn-primary" onclick="guardarProducto()">💾 Guardar</button>
                     <button class="btn-secondary" onclick="limpiar()">🗑️ Limpiar</button>
                 </div>
             </div>
-            <div class="list-box">
-                <h2>📦 Productos</h2>
-                <div id="productsGrid" class="products-grid"><p style="color:#999;text-align:center">Cargando...</p></div>
+            <div class="card">
+                <h2>📦 Productos Publicados</h2>
+                <div id="productsGrid" class="products-grid">
+                    <p style="color:#999;text-align:center;grid-column:1/-1">Cargando...</p>
+                </div>
             </div>
         </div>
 
-        <!-- Notificaciones -->
+        <!-- NOTIFICACIONES -->
         <div id="tabNotificaciones" class="container" style="display:none;grid-template-columns:1fr">
-            <div class="notifications-panel">
-                <div class="notifications-header">
-                    <h2>🔔 Notificaciones</h2>
+            <div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+                    <h2 style="margin:0">🔔 Notificaciones</h2>
                     <button class="btn-mark-all" onclick="marcarTodasLeidas()">✓ Marcar todas leídas</button>
                 </div>
                 <div id="notificationsList"><p style="color:#999;text-align:center">Cargando...</p></div>
             </div>
         </div>
 
-        <!-- Configuración -->
+        <!-- CONFIGURACIÓN -->
         <div id="tabConfiguracion" class="container" style="display:none;grid-template-columns:1fr">
-            <div class="notifications-panel">
-                <div class="notifications-header"><h2>⚙️ Configuración de Pago QR</h2></div>
-                <form id="configForm" enctype="multipart/form-data" style="max-width:600px">
+            <div class="card">
+                <h2>⚙️ Configuración de Pago QR</h2>
+                <form id="configForm" enctype="multipart/form-data" style="max-width:550px">
                     <div class="form-group">
-                        <label>📷 Imagen QR actual</label>
+                        <label>📷 Imagen QR</label>
                         <div id="qrPreview" class="qr-preview"></div>
                         <input type="file" id="qr_imagen" accept="image/*">
                         <input type="hidden" id="qr_imagen_actual">
                     </div>
-                    <div class="form-group"><label>🏦 Nombre del Banco</label><input type="text" id="banco_nombre" placeholder="Ej: Banco Nacional de Bolivia"></div>
-                    <div class="form-group"><label>👤 Titular</label><input type="text" id="cuenta_titular" placeholder="Ej: Andreita Moda"></div>
-                    <div class="form-group"><label>🔢 Número de cuenta / CI</label><input type="text" id="numero_cuenta" placeholder="Ej: 123456789"></div>
-                    <div class="form-group"><label>📱 WhatsApp</label><input type="text" id="whatsapp" placeholder="Ej: 591XXXXXXXXX"></div>
+                    <div class="form-group">
+                        <label>🏦 Banco</label>
+                        <input type="text" id="banco_nombre" placeholder="Ej: Banco Nacional de Bolivia">
+                    </div>
+                    <div class="form-group">
+                        <label>👤 Titular</label>
+                        <input type="text" id="cuenta_titular" placeholder="Ej: Andreita Moda">
+                    </div>
+                    <div class="form-group">
+                        <label>🔢 Número de cuenta</label>
+                        <input type="text" id="numero_cuenta" placeholder="Ej: 123456789">
+                    </div>
+                    <div class="form-group">
+                        <label>📱 WhatsApp</label>
+                        <input type="text" id="whatsapp" placeholder="Ej: 59177262626">
+                    </div>
                     <button type="submit" class="btn-primary">💾 Guardar Configuración</button>
                 </form>
             </div>
         </div>
     </div>
 
+    <!-- ==================== SCRIPT ==================== -->
     <script>
         const API_URL = '/api';
         let currentId = null;
 
-        // ========== LOGIN ==========
         async function login() {
             const u = document.getElementById('username').value;
             const p = document.getElementById('password').value;
             const err = document.getElementById('loginError');
             err.style.display = 'none';
+            if (!u || !p) { err.textContent = '❌ Llena todos los campos'; err.style.display = 'block'; return; }
             try {
                 const r = await fetch(API_URL + '/admin/login', {
                     method: 'POST',
@@ -189,7 +598,6 @@
             document.getElementById('adminPanel').style.display = 'none';
         }
 
-        // ========== TABS ==========
         function cambiarTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('tabProductos').style.display = 'none';
@@ -211,17 +619,19 @@
             }
         }
 
-        // ========== PRODUCTOS ==========
         async function cargarProductos() {
             try {
                 const r = await fetch(API_URL + '/productos');
                 const p = await r.json();
                 const g = document.getElementById('productsGrid');
-                if (!p.length) { g.innerHTML = '<p style="color:#999;text-align:center">📭 Sin productos</p>'; return; }
-                g.innerHTML = p.map(x => `
+                if (!p.length) { g.innerHTML = '<p style="color:#999;text-align:center;grid-column:1/-1">📭 Sin productos</p>'; return; }
+                g.innerHTML = p.map(x => {
+                    const catClass = x.categoria === 'damas' ? 'badge-damas' : 'badge-varones';
+                    return `
                     <div class="product-card">
-                        ${x.imagen ? `<img src="/uploads/${x.imagen}" alt="${x.nombre}">` : '<div style="height:180px;background:#fce4ec;display:flex;align-items:center;justify-content:center;color:#e91e63">Sin img</div>'}
+                        ${x.imagen ? `<img src="/uploads/${x.imagen}" alt="${x.nombre}">` : '<div style="height:150px;background:#eee;display:flex;align-items:center;justify-content:center;color:#999">Sin img</div>'}
                         <div class="product-info">
+                            <span class="cat-badge ${catClass}">${x.categoria||'General'}</span>
                             <h3>${x.nombre}</h3>
                             <p class="price">Bs ${parseFloat(x.precio).toFixed(2)}</p>
                             <div class="card-actions">
@@ -229,7 +639,8 @@
                                 <button class="btn-delete" onclick="eliminar(${x.id})">🗑️</button>
                             </div>
                         </div>
-                    </div>`).join('');
+                    </div>`;
+                }).join('');
             } catch (e) {}
         }
 
@@ -288,7 +699,6 @@
             currentId = null;
         }
 
-        // ========== NOTIFICACIONES ==========
         async function cargarNotificaciones() {
             try {
                 const r = await fetch(API_URL + '/notificaciones');
@@ -296,14 +706,14 @@
                 const l = document.getElementById('notificationsList');
                 if (!n.length) { l.innerHTML = '<p style="color:#999;text-align:center">📭 Sin notificaciones</p>'; return; }
                 l.innerHTML = n.map(x => `
-                    <div class="notification-item ${x.leido ? 'leida' : 'no-leida'}">
-                        <div class="notification-content">
+                    <div class="notif-item ${x.leido ? 'leida' : 'no-leida'}">
+                        <div class="notif-content">
                             <p class="mensaje">${x.mensaje}</p>
                             <p class="fecha">📅 ${new Date(x.fecha).toLocaleString('es-BO')}</p>
                         </div>
-                        <div class="notification-actions">
-                            ${!x.leido ? `<button class="btn-leer" onclick="marcarLeida(${x.id})">✓</button>` : ''}
-                            <button class="btn-eliminar" onclick="eliminarNoti(${x.id})">🗑️</button>
+                        <div style="display:flex;gap:8px">
+                            ${!x.leido ? `<button style="background:#3498db;color:white;border:none;padding:6px 10px;border-radius:6px;cursor:pointer" onclick="marcarLeida(${x.id})">✓</button>` : ''}
+                            <button style="background:#e74c3c;color:white;border:none;padding:6px 10px;border-radius:6px;cursor:pointer" onclick="eliminarNoti(${x.id})">🗑️</button>
                         </div>
                     </div>`).join('');
             } catch (e) {}
@@ -313,8 +723,7 @@
             try {
                 const r = await fetch(API_URL + '/notificaciones/no-leidas');
                 const d = await r.json();
-                const b = document.getElementById('notificationBadge');
-                b.textContent = d.total > 0 ? d.total : '';
+                document.getElementById('notificationBadge').textContent = d.total > 0 ? d.total : '';
             } catch (e) {}
         }
 
@@ -322,7 +731,6 @@
         async function marcarTodasLeidas() { await fetch(API_URL + '/notificaciones/leer-todas', { method: 'PUT' }); cargarNotificaciones(); actualizarContador(); }
         async function eliminarNoti(id) { if (confirm('¿Eliminar?')) { await fetch(API_URL + '/notificaciones/' + id, { method: 'DELETE' }); cargarNotificaciones(); actualizarContador(); } }
 
-        // ========== CONFIGURACIÓN ==========
         async function cargarConfiguracion() {
             try {
                 const r = await fetch(API_URL + '/configuracion');
@@ -332,8 +740,7 @@
                 document.getElementById('cuenta_titular').value = c.cuenta_titular || '';
                 document.getElementById('numero_cuenta').value = c.numero_cuenta || '';
                 document.getElementById('whatsapp').value = c.whatsapp || '';
-                const preview = document.getElementById('qrPreview');
-                preview.innerHTML = c.qr_imagen ? `<img src="/uploads/${c.qr_imagen}" alt="QR">` : '<p style="color:#999">Sin QR</p>';
+                document.getElementById('qrPreview').innerHTML = c.qr_imagen ? `<img src="/uploads/${c.qr_imagen}" alt="QR">` : '<p style="color:#999">Sin QR</p>';
             } catch (e) {}
         }
 
