@@ -500,10 +500,52 @@
                         <input type="text" id="color" placeholder="Ej: Rojo, Azul...">
                     </div>
                 </div>
+                
                 <div class="form-group">
-                    <label>📷 Imagen</label>
-                    <input type="file" id="imagen" accept="image/*">
-                </div>
+    <label>📷 Imagen del Producto</label>
+    <input type="file" id="imagen" accept="image/*" capture="environment" onchange="previewImagen(this)">
+    <button type="button" onclick="abrirCamara()" style="margin-top:8px;padding:10px 20px;background:#2196F3;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600">📸 Tomar Foto</button>
+    <div id="imagenPreview" style="margin-top:10px;"></div>
+    <p id="imagenStatus" style="font-size:0.8em;color:#999;margin-top:5px;"></p>
+</div>
+
+<!-- Modal de verificación -->
+<div id="verifyModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:3000;overflow-y:auto;">
+    <div style="background:white;margin:20px auto;padding:20px;width:95%;max-width:500px;border-radius:16px;">
+        <h3 style="text-align:center;margin-bottom:15px;">✅ Verificar Imagen</h3>
+        <img id="verifyImage" src="" style="width:100%;max-height:400px;object-fit:contain;border-radius:10px;background:#f5f5f5;">
+        <p id="verifyStatus" style="text-align:center;margin:10px 0;font-weight:600;"></p>
+        <div style="display:flex;gap:10px;margin-top:15px;">
+            <button onclick="aceptarImagen()" style="flex:1;padding:12px;background:#4CAF50;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;">✅ Aceptar y Publicar</button>
+            <button onclick="rechazarImagen()" style="flex:1;padding:12px;background:#f44336;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;">❌ Tomar Otra</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de recorte -->
+<div id="cropModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:3500;overflow-y:auto;">
+    <div style="background:white;margin:20px auto;padding:20px;width:95%;max-width:600px;border-radius:16px;">
+        <h3 style="text-align:center;margin-bottom:15px;">✂️ Recortar Imagen</h3>
+        <div style="position:relative;overflow:hidden;border-radius:10px;background:#f5f5f5;max-height:400px;display:flex;justify-content:center;">
+            <img id="cropImage" src="" style="max-width:100%;max-height:400px;object-fit:contain;transition:0.3s;">
+        </div>
+        <div style="margin-top:15px;">
+            <label style="display:block;margin-bottom:5px;font-weight:600;">🔍 Zoom: <span id="zoomValue">100%</span></label>
+            <input type="range" id="zoomRange" min="50" max="200" value="100" oninput="zoomImage(this.value)" style="width:100%;">
+        </div>
+        <div style="margin-top:15px;">
+            <label style="display:block;margin-bottom:5px;font-weight:600;">🔄 Rotar:</label>
+            <div style="display:flex;gap:10px;">
+                <button onclick="rotarImagen(-90)" style="flex:1;padding:10px;background:#FF9800;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;">↺ -90°</button>
+                <button onclick="rotarImagen(90)" style="flex:1;padding:10px;background:#FF9800;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;">↻ +90°</button>
+            </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:15px;">
+            <button onclick="aplicarRecorte()" style="flex:1;padding:12px;background:#4CAF50;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;">✅ Aplicar</button>
+            <button onclick="cerrarCropModal()" style="flex:1;padding:12px;background:#f44336;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;">❌ Cancelar</button>
+        </div>
+    </div>
+</div>
                 <div class="form-actions">
                     <button class="btn-primary" onclick="guardarProducto()">💾 Guardar</button>
                     <button class="btn-secondary" onclick="limpiar()">🗑️ Limpiar</button>
@@ -644,25 +686,138 @@
             } catch (e) {}
         }
 
+
+
         async function guardarProducto() {
-            const f = new FormData();
-            f.append('nombre', document.getElementById('nombre').value);
-            f.append('descripcion', document.getElementById('descripcion').value);
-            f.append('precio', document.getElementById('precio').value);
-            f.append('categoria', document.getElementById('categoria').value);
-            f.append('talla', document.getElementById('talla').value);
-            f.append('color', document.getElementById('color').value);
-            const img = document.getElementById('imagen').files[0];
-            if (img) f.append('imagen', img);
-            const url = currentId ? API_URL + '/productos/' + currentId : API_URL + '/productos';
-            const method = currentId ? 'PUT' : 'POST';
-            try {
-                await fetch(url, { method, body: f });
-                alert('✅ Guardado');
-                limpiar();
-                cargarProductos();
-            } catch (e) { alert('❌ Error'); }
+    // Verificar imagen antes de guardar
+    if (!imagenVerificada && document.getElementById('imagen').files.length > 0) {
+        alert('⚠️ Debes verificar la imagen antes de publicar');
+        return;
+    }
+
+    const f = new FormData();
+    f.append('nombre', document.getElementById('nombre').value);
+    f.append('descripcion', document.getElementById('descripcion').value);
+    f.append('precio', document.getElementById('precio').value);
+    f.append('categoria', document.getElementById('categoria').value);
+    f.append('talla', document.getElementById('talla').value);
+    f.append('color', document.getElementById('color').value);
+    
+    if (imagenSeleccionada) {
+        f.append('imagen', imagenSeleccionada);
+    }
+    
+    const url = currentId ? API_URL + '/productos/' + currentId : API_URL + '/productos';
+    const method = currentId ? 'PUT' : 'POST';
+    
+    try {
+        const r = await fetch(url, { method, body: f });
+        if (r.ok) {
+            alert('✅ Producto publicado correctamente');
+            limpiar();
+            cargarProductos();
+        } else {
+            alert('❌ Error al publicar');
         }
+    } catch (e) { 
+        alert('❌ Error de conexión'); 
+    }
+}
+
+        // ========== CÁMARA E IMAGEN ==========
+let imagenSeleccionada = null;
+let imagenVerificada = false;
+let rotacionActual = 0;
+let zoomActual = 1;
+
+function abrirCamara() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.capture = 'environment';
+    input.onchange = function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            imagenSeleccionada = file;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Mostrar imagen completa sin recortar
+                document.getElementById('imagenPreview').innerHTML = 
+                    `<img src="${e.target.result}" style="width:100%;max-height:300px;object-fit:contain;border-radius:10px;border:2px solid #4CAF50;">`;
+                document.getElementById('imagenStatus').textContent = '📸 Foto tomada. Haz clic en "Verificar y Aceptar"';
+                document.getElementById('imagenStatus').style.color = '#4CAF50';
+                // Abrir modal de verificación
+                abrirVerifyModal(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    input.click();
+}
+
+function previewImagen(input) {
+    const file = input.files[0];
+    if (file) {
+        imagenSeleccionada = file;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('imagenPreview').innerHTML = 
+                `<img src="${e.target.result}" style="width:100%;max-height:300px;object-fit:contain;border-radius:10px;border:2px solid #FF9800;">`;
+            document.getElementById('imagenStatus').textContent = '📷 Imagen seleccionada. Haz clic en "Verificar y Aceptar"';
+            document.getElementById('imagenStatus').style.color = '#FF9800';
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function abrirVerifyModal(imgSrc) {
+    document.getElementById('verifyImage').src = imgSrc;
+    document.getElementById('verifyStatus').textContent = '🖼️ La imagen se muestra COMPLETA sin recortes';
+    document.getElementById('verifyStatus').style.color = '#4CAF50';
+    document.getElementById('verifyModal').style.display = 'block';
+}
+
+function aceptarImagen() {
+    imagenVerificada = true;
+    document.getElementById('verifyModal').style.display = 'none';
+    document.getElementById('imagenStatus').textContent = '✅ Imagen verificada y aceptada';
+    document.getElementById('imagenStatus').style.color = '#4CAF50';
+    // Abrir herramienta de recorte opcional
+    const imgSrc = document.getElementById('imagenPreview').querySelector('img').src;
+    document.getElementById('cropImage').src = imgSrc;
+    document.getElementById('cropModal').style.display = 'block';
+}
+
+function rechazarImagen() {
+    imagenVerificada = false;
+    document.getElementById('verifyModal').style.display = 'none';
+    document.getElementById('imagen').value = '';
+    document.getElementById('imagenPreview').innerHTML = '';
+    document.getElementById('imagenStatus').textContent = '❌ Foto rechazada. Toma otra.';
+    document.getElementById('imagenStatus').style.color = '#f44336';
+    abrirCamara();
+}
+
+// ========== HERRAMIENTAS DE RECORTE ==========
+function zoomImage(value) {
+    zoomActual = value / 100;
+    document.getElementById('zoomValue').textContent = value + '%';
+    document.getElementById('cropImage').style.transform = `scale(${zoomActual}) rotate(${rotacionActual}deg)`;
+}
+
+function rotarImagen(grados) {
+    rotacionActual += grados;
+    document.getElementById('cropImage').style.transform = `scale(${zoomActual}) rotate(${rotacionActual}deg)`;
+}
+
+function aplicarRecorte() {
+    alert('✅ Imagen lista para publicar');
+    document.getElementById('cropModal').style.display = 'none';
+}
+
+function cerrarCropModal() {
+    document.getElementById('cropModal').style.display = 'none';
+}
 
         async function editar(id) {
             try {
@@ -719,6 +874,25 @@
             } catch (e) {}
         }
 
+
+function limpiar() {
+    document.getElementById('productId').value = '';
+    document.getElementById('formTitle').textContent = '➕ Agregar Producto';
+    document.getElementById('nombre').value = '';
+    document.getElementById('descripcion').value = '';
+    document.getElementById('precio').value = '';
+    document.getElementById('categoria').value = '';
+    document.getElementById('talla').value = '';
+    document.getElementById('color').value = '';
+    document.getElementById('imagen').value = '';
+    document.getElementById('imagenPreview').innerHTML = '';
+    document.getElementById('imagenStatus').textContent = '';
+    imagenSeleccionada = null;
+    imagenVerificada = false;
+    rotacionActual = 0;
+    zoomActual = 1;
+    currentId = null;
+}
         async function actualizarContador() {
             try {
                 const r = await fetch(API_URL + '/notificaciones/no-leidas');
@@ -760,6 +934,8 @@
                 cargarConfiguracion();
             } catch (e) { alert('❌ Error'); }
         });
+
+
     </script>
 </body>
 </html>
