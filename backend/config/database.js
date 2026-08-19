@@ -1,7 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const dbPath = path.join(__dirname, '..', 'data.json');
+const dbPath = process.env.RENDER_DISK 
+    ? path.join(process.env.RENDER_DISK, 'data.json')
+    : path.join(__dirname, '..', 'data.json');
 
 let data = {
     productos: [],
@@ -30,6 +32,7 @@ if (fs.existsSync(dbPath)) {
 function saveData() {
     fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
 }
+
 
 const db = {
     productos: {
