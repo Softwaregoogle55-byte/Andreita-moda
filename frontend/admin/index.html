@@ -4,447 +4,110 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Andreita Moda - Admin</title>
+    
+    <!-- Cropper.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
+    
     <style>
-        :root {
-            --rosa: #e91e63;
-            --azul: #2196F3;
-            --fondo: #f0f2f5;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-
-        /* ========== LOGIN ========== */
-        .login-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .login-box {
-            background: white;
-            padding: 45px;
-            border-radius: 24px;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
-            text-align: center;
-            width: 100%;
-            max-width: 420px;
-        }
-
-        .login-box .logo-img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #fce4ec;
-            margin-bottom: 15px;
-        }
-
-        .login-box h1 {
-            font-size: 1.8em;
-            background: linear-gradient(135deg, #667eea, #e91e63);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 5px;
-        }
-
-        .login-box h2 {
-            color: #888;
-            font-weight: 500;
-            margin-bottom: 30px;
-            font-size: 0.95em;
-        }
-
-        .login-box input {
-            width: 100%;
-            padding: 14px;
-            margin: 10px 0;
-            border: 2px solid #e8e8e8;
-            border-radius: 12px;
-            font-size: 15px;
-            transition: 0.3s;
-        }
-
-        .login-box input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .login-box button {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: 0.3s;
-        }
-
-        .login-box button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102,126,234,0.4);
-        }
-
-        .error-msg {
-            color: #e74c3c;
-            margin-top: 12px;
-            display: none;
-            font-size: 0.9em;
-        }
-
-        /* ========== PANEL ========== */
-        .admin-panel {
-            background: var(--fondo);
-            min-height: 100vh;
-        }
-
-        header {
-            background: white;
-            padding: 12px 30px;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.06);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .header-left img {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #fce4ec;
-        }
-
-        header h1 {
-            font-size: 1.2em;
-            color: #333;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-        }
-
-        .notification-bell {
-            position: relative;
-            cursor: pointer;
-            font-size: 1.5em;
-            transition: 0.3s;
-        }
-
-        .notification-bell:hover { transform: scale(1.1); }
-
-        .notification-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #e74c3c;
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 0.5em;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .notification-badge:empty { display: none; }
-
-        .btn-logout {
-            padding: 10px 22px;
-            background: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: 0.3s;
-        }
-
-        .btn-logout:hover { background: #c0392b; }
-
-        /* ========== TABS ========== */
-        .tabs {
-            display: flex;
-            gap: 5px;
-            padding: 20px 30px 0;
-            flex-wrap: wrap;
-        }
-
-        .tab-btn {
-            padding: 12px 22px;
-            background: rgba(255,255,255,0.5);
-            border: none;
-            border-radius: 12px 12px 0 0;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9em;
-            transition: 0.3s;
-        }
-
-        .tab-btn.active { background: white; color: #667eea; }
-        .tab-btn:hover { background: white; }
-
-        /* ========== CONTENEDOR ========== */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 25px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-        }
-
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
-        }
-
-        .card h2 {
-            margin-bottom: 25px;
-            color: #333;
-            font-size: 1.2em;
-        }
-
-        /* ========== FORMULARIO ========== */
-        .form-group { margin-bottom: 18px; }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            color: #555;
-            font-weight: 600;
-            font-size: 0.9em;
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 11px;
-            border: 2px solid #e8e8e8;
-            border-radius: 10px;
-            font-size: 14px;
-            font-family: inherit;
-            transition: 0.3s;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 25px;
-        }
-
-        .btn-primary {
-            padding: 13px 30px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            flex: 1;
-            transition: 0.3s;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102,126,234,0.3);
-        }
-
-        .btn-secondary {
-            padding: 13px 30px;
-            background: #95a5a6;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .btn-secondary:hover { background: #7f8c8d; }
-
-        /* ========== GRID PRODUCTOS ========== */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-            gap: 15px;
-        }
-
-        .product-card {
-            background: #fafafa;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid #eee;
-            transition: 0.3s;
-        }
-
-        .product-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-
-        .product-card img {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-        }
-
-        .product-info { padding: 15px; }
-
-        .product-info .cat-badge {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-size: 0.7em;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 8px;
-        }
-
-        .badge-damas { background: var(--rosa); }
-        .badge-varones { background: var(--azul); }
-
-        .product-info h3 {
-            font-size: 0.9em;
-            margin-bottom: 5px;
-            color: #333;
-        }
-
-        .product-info .price {
-            font-size: 1.2em;
-            font-weight: 700;
-            color: #667eea;
-            margin-bottom: 10px;
-        }
-
-        .card-actions { display: flex; gap: 6px; }
-
-        .card-actions button {
-            flex: 1;
-            padding: 7px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.8em;
-        }
-
-        .btn-edit { background: #f39c12; color: white; }
-        .btn-delete { background: #e74c3c; color: white; }
-
-        /* ========== NOTIFICACIONES ========== */
-        .notif-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
-        }
-
-        .notif-item.no-leida { background: #f0f2ff; }
-        .notif-item.leida { background: #fafafa; opacity: 0.7; }
-
-        .notif-content .mensaje { font-size: 0.95em; color: #333; }
-        .notif-content .fecha { font-size: 0.78em; color: #999; margin-top: 3px; }
-
-        .btn-mark-all {
-            padding: 8px 16px;
-            background: #27ae60;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.85em;
-        }
-
-        /* ========== CONFIG QR ========== */
-        .qr-preview img {
-            max-width: 180px;
-            border-radius: 10px;
-            margin: 10px 0;
-            border: 2px solid #eee;
-        }
-
-        /* ========== RESPONSIVE ========== */
-        @media (max-width: 1024px) {
-            .container { grid-template-columns: 1fr; }
-        }
-
-        @media (max-width: 600px) {
-            .form-row { grid-template-columns: 1fr; }
-            .login-box { padding: 30px; }
-            header h1 { font-size: 1em; }
-            .tabs { padding: 15px 15px 0; }
-        }
+        :root { --rosa:#e91e63; --azul:#2196F3; --verde:#4CAF50; --fondo:#f0f2f5; }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#667eea,#764ba2);min-height:100vh}
+        
+        .login-container{display:flex;justify-content:center;align-items:center;min-height:100vh}
+        .login-box{background:white;padding:45px;border-radius:24px;box-shadow:0 25px 60px rgba(0,0,0,.3);text-align:center;width:420px}
+        .login-box .icon{font-size:3.5em;margin-bottom:10px}
+        .login-box h1{font-size:2em;background:linear-gradient(135deg,#667eea,#e91e63);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:5px}
+        .login-box h2{color:#888;font-weight:500;margin-bottom:30px;font-size:1em}
+        .login-box input{width:100%;padding:14px;margin:10px 0;border:2px solid #e8e8e8;border-radius:12px;font-size:15px}
+        .login-box input:focus{outline:none;border-color:#667eea}
+        .login-box button{width:100%;padding:14px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-top:20px}
+        .error-msg{color:#e74c3c;margin-top:12px;display:none;font-size:.9em}
+        
+        .admin-panel{background:var(--fondo);min-height:100vh}
+        header{background:white;padding:15px 30px;box-shadow:0 2px 15px rgba(0,0,0,.06);display:flex;justify-content:space-between;align-items:center}
+        .header-left{display:flex;align-items:center;gap:12px}
+        .header-left img{width:42px;height:42px;border-radius:10px;object-fit:cover}
+        header h1{font-size:1.3em;color:#333}
+        .header-right{display:flex;align-items:center;gap:20px}
+        .notification-bell{position:relative;cursor:pointer;font-size:1.6em}
+        .notification-badge{position:absolute;top:-8px;right:-8px;background:#e74c3c;color:white;border-radius:50%;width:20px;height:20px;font-size:.5em;font-weight:bold;display:flex;align-items:center;justify-content:center}
+        .notification-badge:empty{display:none}
+        .btn-logout{padding:10px 22px;background:#e74c3c;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600}
+        
+        .tabs{display:flex;gap:5px;padding:20px 30px 0}
+        .tab-btn{padding:12px 25px;background:rgba(255,255,255,.5);border:none;border-radius:12px 12px 0 0;cursor:pointer;font-weight:600;font-size:.9em}
+        .tab-btn.active{background:white;color:#667eea}
+        
+        .container{max-width:1400px;margin:0 auto;padding:25px;display:grid;grid-template-columns:1fr 1fr;gap:25px}
+        .card{background:white;padding:30px;border-radius:16px;box-shadow:0 5px 20px rgba(0,0,0,.06)}
+        .card h2{margin-bottom:25px;color:#333;font-size:1.3em}
+        
+        .form-group{margin-bottom:18px}
+        .form-group label{display:block;margin-bottom:6px;color:#555;font-weight:600;font-size:.9em}
+        .form-group input,.form-group textarea,.form-group select{width:100%;padding:11px;border:2px solid #e8e8e8;border-radius:10px;font-size:14px;font-family:inherit}
+        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+        .form-actions{display:flex;gap:12px;margin-top:25px}
+        .btn-primary{padding:13px 30px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;flex:1}
+        .btn-secondary{padding:13px 30px;background:#95a5a6;color:white;border:none;border-radius:10px;cursor:pointer;font-weight:600}
+        .btn-camera{margin-top:8px;padding:10px 20px;background:#2196F3;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600}
+        
+        #imagenPreview img,#videoPreview video{width:100%;max-height:250px;object-fit:contain;border-radius:10px;margin-top:10px}
+        
+        .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:15px}
+        .product-card{background:#fafafa;border-radius:12px;overflow:hidden;border:1px solid #eee}
+        .product-card img,.product-card video{width:100%;height:160px;object-fit:cover}
+        .product-info{padding:15px}
+        .cat-badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:.7em;font-weight:700;color:white;margin-bottom:8px}
+        .badge-damas{background:var(--rosa)}
+        .badge-varones{background:var(--azul)}
+        .product-info h3{font-size:.95em;margin-bottom:5px}
+        .product-info .price{font-size:1.2em;font-weight:700;color:#667eea;margin-bottom:10px}
+        .card-actions{display:flex;gap:6px}
+        .card-actions button{flex:1;padding:7px;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:.8em}
+        .btn-edit{background:#f39c12;color:white}
+        .btn-delete{background:#e74c3c;color:white}
+        
+        .notif-item{display:flex;justify-content:space-between;align-items:center;padding:15px;margin-bottom:10px;border-radius:10px;border-left:4px solid #667eea}
+        .notif-item.no-leida{background:#f0f2ff}
+        .notif-item.leida{background:#fafafa;opacity:.7}
+        .btn-mark-all{padding:8px 16px;background:#27ae60;color:white;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:.85em}
+        
+        .qr-preview img{max-width:180px;border-radius:10px;margin:10px 0;border:2px solid #eee}
+        
+        .modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:3000;overflow-y:auto}
+        .modal-box{background:white;margin:20px auto;padding:20px;width:95%;max-width:600px;border-radius:16px}
+        .crop-mode-btn{padding:10px;border:none;border-radius:8px;cursor:pointer;font-weight:600;color:white}
+        .crop-mode-btn.active{opacity:1!important;border:3px solid #333}
+        
+        @media(max-width:1024px){.container{grid-template-columns:1fr}}
+        @media(max-width:600px){.form-row{grid-template-columns:1fr}.login-box{width:90%}}
     </style>
 </head>
 <body>
 
-    <!-- ==================== LOGIN ==================== -->
+    <!-- LOGIN -->
     <div id="loginSection" class="login-container">
         <div class="login-box">
-            <img src="https://cdn.phototourl.com/free/2026-08-16-1600c8b6-d670-4973-a77c-d5a72c7d291e.png" alt="Andreita Moda" class="logo-img" onerror="this.style.display='none'">
+            <div class="icon">🔐</div>
             <h1>Andreita Moda</h1>
             <h2>Panel de Administración</h2>
-            <input type="text" id="username" placeholder="👤 Usuario" autocomplete="off">
+            <input type="text" id="username" placeholder="👤 Usuario">
             <input type="password" id="password" placeholder="🔑 Contraseña">
             <button onclick="login()">Iniciar Sesión</button>
             <p id="loginError" class="error-msg"></p>
         </div>
     </div>
 
-    <!-- ==================== PANEL ==================== -->
+    <!-- PANEL -->
     <div id="adminPanel" class="admin-panel" style="display:none">
         <header>
             <div class="header-left">
-                <img src="https://cdn.phototourl.com/free/2026-08-16-1600c8b6-d670-4973-a77c-d5a72c7d291e.png" alt="Logo" onerror="this.style.display='none'">
+                <img src="https://cdn.phototourl.com/free/2026-08-16-1600c8b6-d670-4973-a77c-d5a72c7d291e.png" alt="Logo">
                 <h1>Andreita Moda - Admin</h1>
             </div>
             <div class="header-right">
-                <div class="notification-bell" onclick="cambiarTab('notificaciones')">
-                    🔔<span id="notificationBadge" class="notification-badge"></span>
-                </div>
+                <div class="notification-bell" onclick="cambiarTab('notificaciones')">🔔<span id="notificationBadge" class="notification-badge"></span></div>
                 <button class="btn-logout" onclick="logout()">🚪 Salir</button>
             </div>
         </header>
@@ -460,160 +123,116 @@
             <div class="card">
                 <h2 id="formTitle">➕ Agregar Producto</h2>
                 <input type="hidden" id="productId">
-                <div class="form-group">
-                    <label>Nombre *</label>
-                    <input type="text" id="nombre" required placeholder="Ej: Vestido Floral">
-                </div>
-                <div class="form-group">
-                    <label>Descripción</label>
-                    <textarea id="descripcion" rows="2" placeholder="Describe el producto..."></textarea>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Precio (Bs) *</label>
-                        <input type="number" id="precio" step="0.01" required placeholder="0.00">
-                    </div>
-                    <div class="form-group">
-                        <label>Categoría *</label>
-                        <select id="categoria" required>
-                            <option value="">Seleccionar</option>
-                            <option value="damas">👩 Damas</option>
-                            <option value="varones">👨 Varones</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Talla</label>
-                        <select id="talla">
-                            <option value="">Seleccionar</option>
-                            <option value="XS">XS</option>
-                            <option value="S">S</option>
-                            <option value="M">M</option>
-                            <option value="L">L</option>
-                            <option value="XL">XL</option>
-                            <option value="XXL">XXL</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Color</label>
-                        <input type="text" id="color" placeholder="Ej: Rojo, Azul...">
-                    </div>
-                </div>
                 
+                <div class="form-group"><label>Nombre *</label><input type="text" id="nombre" required></div>
+                <div class="form-group"><label>Descripción</label><textarea id="descripcion" rows="2"></textarea></div>
+                <div class="form-row">
+                    <div class="form-group"><label>Precio (Bs) *</label><input type="number" id="precio" step="0.01" required></div>
+                    <div class="form-group"><label>Categoría *</label><select id="categoria" required><option value="">Seleccionar</option><option value="damas">👩 Damas</option><option value="varones">👨 Varones</option></select></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Talla</label><select id="talla"><option value="">Seleccionar</option><option value="XS">XS</option><option value="S">S</option><option value="M">M</option><option value="L">L</option><option value="XL">XL</option></select></div>
+                    <div class="form-group"><label>Color</label><input type="text" id="color"></div>
+                </div>
+
+                <!-- IMAGEN -->
                 <div class="form-group">
-    <label>📷 Imagen del Producto</label>
-    <input type="file" id="imagen" accept="image/*" capture="environment" onchange="previewImagen(this)">
-    <button type="button" onclick="abrirCamara()" style="margin-top:8px;padding:10px 20px;background:#2196F3;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600">📸 Tomar Foto</button>
-    <div id="imagenPreview" style="margin-top:10px;"></div>
-    <p id="imagenStatus" style="font-size:0.8em;color:#999;margin-top:5px;"></p>
-</div>
+                    <label>📷 Imagen</label>
+                    <input type="file" id="imagen" accept="image/*" capture="environment" onchange="previewImagen(this)">
+                    <button type="button" class="btn-camera" onclick="abrirCamara()">📸 Tomar Foto</button>
+                    <div id="imagenPreview"></div>
+                    <p id="imagenStatus" style="font-size:.8em;color:#999"></p>
+                </div>
 
-<!-- Modal de verificación -->
-<div id="verifyModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:3000;overflow-y:auto;">
-    <div style="background:white;margin:20px auto;padding:20px;width:95%;max-width:500px;border-radius:16px;">
-        <h3 style="text-align:center;margin-bottom:15px;">✅ Verificar Imagen</h3>
-        <img id="verifyImage" src="" style="width:100%;max-height:400px;object-fit:contain;border-radius:10px;background:#f5f5f5;">
-        <p id="verifyStatus" style="text-align:center;margin:10px 0;font-weight:600;"></p>
-        <div style="display:flex;gap:10px;margin-top:15px;">
-            <button onclick="aceptarImagen()" style="flex:1;padding:12px;background:#4CAF50;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;">✅ Aceptar y Publicar</button>
-            <button onclick="rechazarImagen()" style="flex:1;padding:12px;background:#f44336;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;">❌ Tomar Otra</button>
-        </div>
-    </div>
-</div>
+                <!-- VIDEO -->
+                <div class="form-group">
+                    <label>🎥 Video del Producto</label>
+                    <input type="file" id="video" accept="video/*" capture="environment" onchange="previewVideo(this)">
+                    <div id="videoPreview"></div>
+                    <p id="videoStatus" style="font-size:.8em;color:#999"></p>
+                </div>
 
-<!-- Modal de recorte -->
-<div id="cropModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:3500;overflow-y:auto;">
-    <div style="background:white;margin:20px auto;padding:20px;width:95%;max-width:600px;border-radius:16px;">
-        <h3 style="text-align:center;margin-bottom:15px;">✂️ Recortar Imagen</h3>
-        <div style="position:relative;overflow:hidden;border-radius:10px;background:#f5f5f5;max-height:400px;display:flex;justify-content:center;">
-            <img id="cropImage" src="" style="max-width:100%;max-height:400px;object-fit:contain;transition:0.3s;">
-        </div>
-        <div style="margin-top:15px;">
-            <label style="display:block;margin-bottom:5px;font-weight:600;">🔍 Zoom: <span id="zoomValue">100%</span></label>
-            <input type="range" id="zoomRange" min="50" max="200" value="100" oninput="zoomImage(this.value)" style="width:100%;">
-        </div>
-        <div style="margin-top:15px;">
-            <label style="display:block;margin-bottom:5px;font-weight:600;">🔄 Rotar:</label>
-            <div style="display:flex;gap:10px;">
-                <button onclick="rotarImagen(-90)" style="flex:1;padding:10px;background:#FF9800;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;">↺ -90°</button>
-                <button onclick="rotarImagen(90)" style="flex:1;padding:10px;background:#FF9800;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;">↻ +90°</button>
-            </div>
-        </div>
-        <div style="display:flex;gap:10px;margin-top:15px;">
-            <button onclick="aplicarRecorte()" style="flex:1;padding:12px;background:#4CAF50;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;">✅ Aplicar</button>
-            <button onclick="cerrarCropModal()" style="flex:1;padding:12px;background:#f44336;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;">❌ Cancelar</button>
-        </div>
-    </div>
-</div>
                 <div class="form-actions">
                     <button class="btn-primary" onclick="guardarProducto()">💾 Guardar</button>
                     <button class="btn-secondary" onclick="limpiar()">🗑️ Limpiar</button>
                 </div>
             </div>
+
             <div class="card">
-                <h2>📦 Productos Publicados</h2>
-                <div id="productsGrid" class="products-grid">
-                    <p style="color:#999;text-align:center;grid-column:1/-1">Cargando...</p>
-                </div>
+                <h2>📦 Productos</h2>
+                <div id="productsGrid" class="products-grid"><p style="color:#999;text-align:center;grid-column:1/-1">Cargando...</p></div>
             </div>
         </div>
 
         <!-- NOTIFICACIONES -->
         <div id="tabNotificaciones" class="container" style="display:none;grid-template-columns:1fr">
             <div class="card">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px">
-                    <h2 style="margin:0">🔔 Notificaciones</h2>
-                    <button class="btn-mark-all" onclick="marcarTodasLeidas()">✓ Marcar todas leídas</button>
-                </div>
-                <div id="notificationsList"><p style="color:#999;text-align:center">Cargando...</p></div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:20px"><h2 style="margin:0">🔔 Notificaciones</h2><button class="btn-mark-all" onclick="marcarTodasLeidas()">✓ Marcar todas</button></div>
+                <div id="notificationsList"></div>
             </div>
         </div>
 
-        <!-- CONFIGURACIÓN -->
+        <!-- CONFIG -->
         <div id="tabConfiguracion" class="container" style="display:none;grid-template-columns:1fr">
             <div class="card">
-                <h2>⚙️ Configuración de Pago QR</h2>
+                <h2>⚙️ Configuración QR</h2>
                 <form id="configForm" enctype="multipart/form-data" style="max-width:550px">
-                    <div class="form-group">
-                        <label>📷 Imagen QR</label>
-                        <div id="qrPreview" class="qr-preview"></div>
-                        <input type="file" id="qr_imagen" accept="image/*">
-                        <input type="hidden" id="qr_imagen_actual">
-                    </div>
-                    <div class="form-group">
-                        <label>🏦 Banco</label>
-                        <input type="text" id="banco_nombre" placeholder="Ej: Banco Nacional de Bolivia">
-                    </div>
-                    <div class="form-group">
-                        <label>👤 Titular</label>
-                        <input type="text" id="cuenta_titular" placeholder="Ej: Andreita Moda">
-                    </div>
-                    <div class="form-group">
-                        <label>🔢 Número de cuenta</label>
-                        <input type="text" id="numero_cuenta" placeholder="Ej: 123456789">
-                    </div>
-                    <div class="form-group">
-                        <label>📱 WhatsApp</label>
-                        <input type="text" id="whatsapp" placeholder="Ej: 59177262626">
-                    </div>
-                    <button type="submit" class="btn-primary">💾 Guardar Configuración</button>
+                    <div class="form-group"><label>📷 QR</label><div id="qrPreview" class="qr-preview"></div><input type="file" id="qr_imagen" accept="image/*"><input type="hidden" id="qr_imagen_actual"></div>
+                    <div class="form-group"><label>🏦 Banco</label><input type="text" id="banco_nombre"></div>
+                    <div class="form-group"><label>👤 Titular</label><input type="text" id="cuenta_titular"></div>
+                    <div class="form-group"><label>🔢 Cuenta</label><input type="text" id="numero_cuenta"></div>
+                    <div class="form-group"><label>📱 WhatsApp</label><input type="text" id="whatsapp"></div>
+                    <button type="submit" class="btn-primary">💾 Guardar</button>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- ==================== SCRIPT ==================== -->
+    <!-- MODAL VERIFICAR -->
+    <div id="verifyModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="text-align:center;margin-bottom:15px">✅ Verificar Imagen</h3>
+            <img id="verifyImage" src="" style="width:100%;max-height:400px;object-fit:contain;border-radius:10px">
+            <div style="display:flex;gap:10px;margin-top:15px">
+                <button onclick="aceptarImagen()" style="flex:1;padding:12px;background:#4CAF50;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer">✅ Aceptar y Recortar</button>
+                <button onclick="rechazarImagen()" style="flex:1;padding:12px;background:#f44336;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer">❌ Otra</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL RECORTE -->
+    <div id="cropModal" class="modal-overlay">
+        <div class="modal-box" style="max-width:700px">
+            <h3 style="text-align:center;margin-bottom:15px">✂️ Recortar</h3>
+            <div style="max-height:350px;background:#f5f5f5;border-radius:10px;overflow:hidden"><img id="cropImage" src="" style="max-width:100%"></div>
+            <input type="range" id="zoomRange" min="0.1" max="3" step="0.1" value="1" oninput="actualizarZoom(this.value)" style="width:100%;margin-top:10px">
+            <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+                <button onclick="modoRecorte('libre')" class="crop-mode-btn active" style="background:#e91e63">✂️ Libre</button>
+                <button onclick="modoRecorte('cuadrado')" class="crop-mode-btn" style="background:#2196F3">⬜ 1:1</button>
+                <button onclick="modoRecorte('rectangular')" class="crop-mode-btn" style="background:#FF9800">▭ 4:3</button>
+                <button onclick="modoRecorte('retrato')" class="crop-mode-btn" style="background:#9C27B0">📱 3:4</button>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:15px">
+                <button onclick="aplicarRecorte()" style="flex:1;padding:12px;background:#4CAF50;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer">✅ Aplicar</button>
+                <button onclick="cerrarCropModal()" style="flex:1;padding:12px;background:#f44336;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer">❌ Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT -->
     <script>
         const API_URL = '/api';
         let currentId = null;
+        let imagenSeleccionada = null;
+        let videoSeleccionado = null;
+        let imagenVerificada = false;
+        let cropper = null;
 
         async function login() {
             const u = document.getElementById('username').value;
             const p = document.getElementById('password').value;
             const err = document.getElementById('loginError');
             err.style.display = 'none';
-            if (!u || !p) { err.textContent = '❌ Llena todos los campos'; err.style.display = 'block'; return; }
             try {
                 const r = await fetch(API_URL + '/admin/login', {
                     method: 'POST',
@@ -625,14 +244,8 @@
                     document.getElementById('adminPanel').style.display = 'block';
                     cargarProductos();
                     setInterval(actualizarContador, 10000);
-                } else {
-                    err.textContent = '❌ Usuario o contraseña incorrectos';
-                    err.style.display = 'block';
-                }
-            } catch (e) {
-                err.textContent = '❌ Error de conexión';
-                err.style.display = 'block';
-            }
+                } else { err.textContent = '❌ Credenciales inválidas'; err.style.display = 'block'; }
+            } catch (e) { err.textContent = '❌ Error de conexión'; err.style.display = 'block'; }
         }
 
         function logout() {
@@ -645,35 +258,123 @@
             document.getElementById('tabProductos').style.display = 'none';
             document.getElementById('tabNotificaciones').style.display = 'none';
             document.getElementById('tabConfiguracion').style.display = 'none';
+            if (tab === 'productos') { document.getElementById('tabProductos').style.display = 'grid'; document.querySelectorAll('.tab-btn')[0].classList.add('active'); cargarProductos(); }
+            else if (tab === 'notificaciones') { document.getElementById('tabNotificaciones').style.display = 'grid'; document.querySelectorAll('.tab-btn')[1].classList.add('active'); cargarNotificaciones(); }
+            else { document.getElementById('tabConfiguracion').style.display = 'grid'; document.querySelectorAll('.tab-btn')[2].classList.add('active'); cargarConfiguracion(); }
+        }
 
-            if (tab === 'productos') {
-                document.getElementById('tabProductos').style.display = 'grid';
-                document.querySelectorAll('.tab-btn')[0].classList.add('active');
-                cargarProductos();
-            } else if (tab === 'notificaciones') {
-                document.getElementById('tabNotificaciones').style.display = 'grid';
-                document.querySelectorAll('.tab-btn')[1].classList.add('active');
-                cargarNotificaciones();
-            } else if (tab === 'configuracion') {
-                document.getElementById('tabConfiguracion').style.display = 'grid';
-                document.querySelectorAll('.tab-btn')[2].classList.add('active');
-                cargarConfiguracion();
+        // ========== IMAGEN ==========
+        function abrirCamara() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.capture = 'environment';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    imagenSeleccionada = file;
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('imagenPreview').innerHTML = `<img src="${e.target.result}">`;
+                        document.getElementById('verifyImage').src = e.target.result;
+                        document.getElementById('verifyModal').style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        }
+
+        function previewImagen(input) {
+            const file = input.files[0];
+            if (file) {
+                imagenSeleccionada = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('imagenPreview').innerHTML = `<img src="${e.target.result}">`;
+                };
+                reader.readAsDataURL(file);
             }
         }
 
+        function aceptarImagen() {
+            imagenVerificada = true;
+            document.getElementById('verifyModal').style.display = 'none';
+            const img = document.getElementById('imagenPreview').querySelector('img');
+            if (img) {
+                document.getElementById('cropImage').src = img.src;
+                document.getElementById('cropModal').style.display = 'block';
+                setTimeout(() => {
+                    if (cropper) cropper.destroy();
+                    cropper = new Cropper(document.getElementById('cropImage'), { aspectRatio: NaN, viewMode: 1, autoCropArea: 1, responsive: true, background: false });
+                }, 200);
+            }
+        }
+
+        function rechazarImagen() {
+            imagenVerificada = false;
+            document.getElementById('verifyModal').style.display = 'none';
+            document.getElementById('imagen').value = '';
+            document.getElementById('imagenPreview').innerHTML = '';
+            imagenSeleccionada = null;
+            abrirCamara();
+        }
+
+        function modoRecorte(modo) {
+            if (!cropper) return;
+            let ratio;
+            if (modo === 'libre') ratio = NaN;
+            else if (modo === 'cuadrado') ratio = 1/1;
+            else if (modo === 'rectangular') ratio = 4/3;
+            else ratio = 3/4;
+            cropper.setAspectRatio(ratio);
+            document.querySelectorAll('.crop-mode-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function actualizarZoom(v) { if (cropper) cropper.zoomTo(parseFloat(v)); }
+
+        function aplicarRecorte() {
+            if (!cropper) return;
+            const canvas = cropper.getCroppedCanvas({ width: 800 });
+            canvas.toBlob((blob) => {
+                imagenSeleccionada = new File([blob], 'recortado.jpg', { type: 'image/jpeg' });
+                document.getElementById('imagenPreview').innerHTML = `<img src="${canvas.toDataURL()}">`;
+                document.getElementById('imagenStatus').textContent = '✅ Recorte aplicado';
+                document.getElementById('imagenStatus').style.color = '#4CAF50';
+                cerrarCropModal();
+            }, 'image/jpeg', 0.9);
+        }
+
+        function cerrarCropModal() {
+            if (cropper) { cropper.destroy(); cropper = null; }
+            document.getElementById('cropModal').style.display = 'none';
+        }
+
+        // ========== VIDEO ==========
+        function previewVideo(input) {
+            const file = input.files[0];
+            if (file) {
+                videoSeleccionado = file;
+                const url = URL.createObjectURL(file);
+                document.getElementById('videoPreview').innerHTML = `<video src="${url}" controls></video>`;
+                document.getElementById('videoStatus').textContent = '🎥 Video listo';
+                document.getElementById('videoStatus').style.color = '#4CAF50';
+            }
+        }
+
+        // ========== PRODUCTOS ==========
         async function cargarProductos() {
             try {
                 const r = await fetch(API_URL + '/productos');
                 const p = await r.json();
                 const g = document.getElementById('productsGrid');
                 if (!p.length) { g.innerHTML = '<p style="color:#999;text-align:center;grid-column:1/-1">📭 Sin productos</p>'; return; }
-                g.innerHTML = p.map(x => {
-                    const catClass = x.categoria === 'damas' ? 'badge-damas' : 'badge-varones';
-                    return `
+                g.innerHTML = p.map(x => `
                     <div class="product-card">
-                        ${x.imagen ? `<img src="/uploads/${x.imagen}" alt="${x.nombre}">` : '<div style="height:150px;background:#eee;display:flex;align-items:center;justify-content:center;color:#999">Sin img</div>'}
+                        ${x.video ? `<video src="/uploads/${x.video}" muted></video>` : x.imagen ? `<img src="/uploads/${x.imagen}">` : '<div style="height:160px;background:#eee;display:flex;align-items:center;justify-content:center;color:#999">Sin media</div>'}
                         <div class="product-info">
-                            <span class="cat-badge ${catClass}">${x.categoria||'General'}</span>
+                            <span class="cat-badge ${x.categoria === 'damas' ? 'badge-damas' : 'badge-varones'}">${x.categoria}</span>
                             <h3>${x.nombre}</h3>
                             <p class="price">Bs ${parseFloat(x.precio).toFixed(2)}</p>
                             <div class="card-actions">
@@ -681,164 +382,46 @@
                                 <button class="btn-delete" onclick="eliminar(${x.id})">🗑️</button>
                             </div>
                         </div>
-                    </div>`;
-                }).join('');
+                    </div>`).join('');
             } catch (e) {}
         }
-
-
 
         async function guardarProducto() {
-    // Verificar imagen antes de guardar
-    if (!imagenVerificada && document.getElementById('imagen').files.length > 0) {
-        alert('⚠️ Debes verificar la imagen antes de publicar');
-        return;
-    }
-
-    const f = new FormData();
-    f.append('nombre', document.getElementById('nombre').value);
-    f.append('descripcion', document.getElementById('descripcion').value);
-    f.append('precio', document.getElementById('precio').value);
-    f.append('categoria', document.getElementById('categoria').value);
-    f.append('talla', document.getElementById('talla').value);
-    f.append('color', document.getElementById('color').value);
-    
-    if (imagenSeleccionada) {
-        f.append('imagen', imagenSeleccionada);
-    }
-    
-    const url = currentId ? API_URL + '/productos/' + currentId : API_URL + '/productos';
-    const method = currentId ? 'PUT' : 'POST';
-    
-    try {
-        const r = await fetch(url, { method, body: f });
-        if (r.ok) {
-            alert('✅ Producto publicado correctamente');
-            limpiar();
-            cargarProductos();
-        } else {
-            alert('❌ Error al publicar');
+            const f = new FormData();
+            f.append('nombre', document.getElementById('nombre').value);
+            f.append('descripcion', document.getElementById('descripcion').value);
+            f.append('precio', document.getElementById('precio').value);
+            f.append('categoria', document.getElementById('categoria').value);
+            f.append('talla', document.getElementById('talla').value);
+            f.append('color', document.getElementById('color').value);
+            if (imagenSeleccionada) f.append('imagen', imagenSeleccionada);
+            if (videoSeleccionado) f.append('video', videoSeleccionado);
+            const url = currentId ? API_URL + '/productos/' + currentId : API_URL + '/productos';
+            const method = currentId ? 'PUT' : 'POST';
+            try {
+                const r = await fetch(url, { method, body: f });
+                if (r.ok) { alert('✅ Publicado'); limpiar(); cargarProductos(); }
+            } catch (e) { alert('❌ Error'); }
         }
-    } catch (e) { 
-        alert('❌ Error de conexión'); 
-    }
-}
-
-        // ========== CÁMARA E IMAGEN ==========
-let imagenSeleccionada = null;
-let imagenVerificada = false;
-let rotacionActual = 0;
-let zoomActual = 1;
-
-function abrirCamara() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.capture = 'environment';
-    input.onchange = function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            imagenSeleccionada = file;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                // Mostrar imagen completa sin recortar
-                document.getElementById('imagenPreview').innerHTML = 
-                    `<img src="${e.target.result}" style="width:100%;max-height:300px;object-fit:contain;border-radius:10px;border:2px solid #4CAF50;">`;
-                document.getElementById('imagenStatus').textContent = '📸 Foto tomada. Haz clic en "Verificar y Aceptar"';
-                document.getElementById('imagenStatus').style.color = '#4CAF50';
-                // Abrir modal de verificación
-                abrirVerifyModal(e.target.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-    input.click();
-}
-
-function previewImagen(input) {
-    const file = input.files[0];
-    if (file) {
-        imagenSeleccionada = file;
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById('imagenPreview').innerHTML = 
-                `<img src="${e.target.result}" style="width:100%;max-height:300px;object-fit:contain;border-radius:10px;border:2px solid #FF9800;">`;
-            document.getElementById('imagenStatus').textContent = '📷 Imagen seleccionada. Haz clic en "Verificar y Aceptar"';
-            document.getElementById('imagenStatus').style.color = '#FF9800';
-        };
-        reader.readAsDataURL(file);
-    }
-}
-
-function abrirVerifyModal(imgSrc) {
-    document.getElementById('verifyImage').src = imgSrc;
-    document.getElementById('verifyStatus').textContent = '🖼️ La imagen se muestra COMPLETA sin recortes';
-    document.getElementById('verifyStatus').style.color = '#4CAF50';
-    document.getElementById('verifyModal').style.display = 'block';
-}
-
-function aceptarImagen() {
-    imagenVerificada = true;
-    document.getElementById('verifyModal').style.display = 'none';
-    document.getElementById('imagenStatus').textContent = '✅ Imagen verificada y aceptada';
-    document.getElementById('imagenStatus').style.color = '#4CAF50';
-    // Abrir herramienta de recorte opcional
-    const imgSrc = document.getElementById('imagenPreview').querySelector('img').src;
-    document.getElementById('cropImage').src = imgSrc;
-    document.getElementById('cropModal').style.display = 'block';
-}
-
-function rechazarImagen() {
-    imagenVerificada = false;
-    document.getElementById('verifyModal').style.display = 'none';
-    document.getElementById('imagen').value = '';
-    document.getElementById('imagenPreview').innerHTML = '';
-    document.getElementById('imagenStatus').textContent = '❌ Foto rechazada. Toma otra.';
-    document.getElementById('imagenStatus').style.color = '#f44336';
-    abrirCamara();
-}
-
-// ========== HERRAMIENTAS DE RECORTE ==========
-function zoomImage(value) {
-    zoomActual = value / 100;
-    document.getElementById('zoomValue').textContent = value + '%';
-    document.getElementById('cropImage').style.transform = `scale(${zoomActual}) rotate(${rotacionActual}deg)`;
-}
-
-function rotarImagen(grados) {
-    rotacionActual += grados;
-    document.getElementById('cropImage').style.transform = `scale(${zoomActual}) rotate(${rotacionActual}deg)`;
-}
-
-function aplicarRecorte() {
-    alert('✅ Imagen lista para publicar');
-    document.getElementById('cropModal').style.display = 'none';
-}
-
-function cerrarCropModal() {
-    document.getElementById('cropModal').style.display = 'none';
-}
 
         async function editar(id) {
-            try {
-                const r = await fetch(API_URL + '/productos/' + id);
-                const p = await r.json();
-                document.getElementById('formTitle').textContent = '✏️ Editar Producto';
-                document.getElementById('productId').value = p.id;
-                document.getElementById('nombre').value = p.nombre;
-                document.getElementById('descripcion').value = p.descripcion || '';
-                document.getElementById('precio').value = p.precio;
-                document.getElementById('categoria').value = p.categoria || '';
-                document.getElementById('talla').value = p.talla || '';
-                document.getElementById('color').value = p.color || '';
-                currentId = id;
-                window.scrollTo({top:0,behavior:'smooth'});
-            } catch (e) {}
+            const r = await fetch(API_URL + '/productos/' + id);
+            const p = await r.json();
+            document.getElementById('formTitle').textContent = '✏️ Editar';
+            document.getElementById('productId').value = p.id;
+            document.getElementById('nombre').value = p.nombre;
+            document.getElementById('descripcion').value = p.descripcion || '';
+            document.getElementById('precio').value = p.precio;
+            document.getElementById('categoria').value = p.categoria || '';
+            document.getElementById('talla').value = p.talla || '';
+            document.getElementById('color').value = p.color || '';
+            currentId = id;
         }
 
         async function eliminar(id) {
             if (!confirm('¿Eliminar?')) return;
-            try { await fetch(API_URL + '/productos/' + id, { method: 'DELETE' }); alert('✅ Eliminado'); cargarProductos(); } catch (e) {}
+            await fetch(API_URL + '/productos/' + id, { method: 'DELETE' });
+            cargarProductos();
         }
 
         function limpiar() {
@@ -851,71 +434,52 @@ function cerrarCropModal() {
             document.getElementById('talla').value = '';
             document.getElementById('color').value = '';
             document.getElementById('imagen').value = '';
+            document.getElementById('video').value = '';
+            document.getElementById('imagenPreview').innerHTML = '';
+            document.getElementById('videoPreview').innerHTML = '';
+            document.getElementById('imagenStatus').textContent = '';
+            document.getElementById('videoStatus').textContent = '';
+            imagenSeleccionada = null;
+            videoSeleccionado = null;
+            imagenVerificada = false;
             currentId = null;
         }
 
+        // ========== NOTIFICACIONES ==========
         async function cargarNotificaciones() {
-            try {
-                const r = await fetch(API_URL + '/notificaciones');
-                const n = await r.json();
-                const l = document.getElementById('notificationsList');
-                if (!n.length) { l.innerHTML = '<p style="color:#999;text-align:center">📭 Sin notificaciones</p>'; return; }
-                l.innerHTML = n.map(x => `
-                    <div class="notif-item ${x.leido ? 'leida' : 'no-leida'}">
-                        <div class="notif-content">
-                            <p class="mensaje">${x.mensaje}</p>
-                            <p class="fecha">📅 ${new Date(x.fecha).toLocaleString('es-BO')}</p>
-                        </div>
-                        <div style="display:flex;gap:8px">
-                            ${!x.leido ? `<button style="background:#3498db;color:white;border:none;padding:6px 10px;border-radius:6px;cursor:pointer" onclick="marcarLeida(${x.id})">✓</button>` : ''}
-                            <button style="background:#e74c3c;color:white;border:none;padding:6px 10px;border-radius:6px;cursor:pointer" onclick="eliminarNoti(${x.id})">🗑️</button>
-                        </div>
-                    </div>`).join('');
-            } catch (e) {}
+            const r = await fetch(API_URL + '/notificaciones');
+            const n = await r.json();
+            const l = document.getElementById('notificationsList');
+            if (!n.length) { l.innerHTML = '<p style="color:#999;text-align:center">📭 Sin notificaciones</p>'; return; }
+            l.innerHTML = n.map(x => `
+                <div class="notif-item ${x.leido ? 'leida' : 'no-leida'}">
+                    <div><p>${x.mensaje}</p><p style="font-size:.75em;color:#999">${new Date(x.fecha).toLocaleString('es-BO')}</p></div>
+                    <div style="display:flex;gap:8px">
+                        ${!x.leido ? `<button style="background:#3498db;color:white;border:none;padding:6px 10px;border-radius:6px;cursor:pointer" onclick="marcarLeida(${x.id})">✓</button>` : ''}
+                        <button style="background:#e74c3c;color:white;border:none;padding:6px 10px;border-radius:6px;cursor:pointer" onclick="eliminarNoti(${x.id})">🗑️</button>
+                    </div>
+                </div>`).join('');
         }
 
-
-function limpiar() {
-    document.getElementById('productId').value = '';
-    document.getElementById('formTitle').textContent = '➕ Agregar Producto';
-    document.getElementById('nombre').value = '';
-    document.getElementById('descripcion').value = '';
-    document.getElementById('precio').value = '';
-    document.getElementById('categoria').value = '';
-    document.getElementById('talla').value = '';
-    document.getElementById('color').value = '';
-    document.getElementById('imagen').value = '';
-    document.getElementById('imagenPreview').innerHTML = '';
-    document.getElementById('imagenStatus').textContent = '';
-    imagenSeleccionada = null;
-    imagenVerificada = false;
-    rotacionActual = 0;
-    zoomActual = 1;
-    currentId = null;
-}
         async function actualizarContador() {
-            try {
-                const r = await fetch(API_URL + '/notificaciones/no-leidas');
-                const d = await r.json();
-                document.getElementById('notificationBadge').textContent = d.total > 0 ? d.total : '';
-            } catch (e) {}
+            const r = await fetch(API_URL + '/notificaciones/no-leidas');
+            const d = await r.json();
+            document.getElementById('notificationBadge').textContent = d.total > 0 ? d.total : '';
         }
-
         async function marcarLeida(id) { await fetch(API_URL + '/notificaciones/' + id + '/leer', { method: 'PUT' }); cargarNotificaciones(); actualizarContador(); }
         async function marcarTodasLeidas() { await fetch(API_URL + '/notificaciones/leer-todas', { method: 'PUT' }); cargarNotificaciones(); actualizarContador(); }
         async function eliminarNoti(id) { if (confirm('¿Eliminar?')) { await fetch(API_URL + '/notificaciones/' + id, { method: 'DELETE' }); cargarNotificaciones(); actualizarContador(); } }
 
+        // ========== CONFIG ==========
         async function cargarConfiguracion() {
-            try {
-                const r = await fetch(API_URL + '/configuracion');
-                const c = await r.json();
-                document.getElementById('qr_imagen_actual').value = c.qr_imagen || '';
-                document.getElementById('banco_nombre').value = c.banco_nombre || '';
-                document.getElementById('cuenta_titular').value = c.cuenta_titular || '';
-                document.getElementById('numero_cuenta').value = c.numero_cuenta || '';
-                document.getElementById('whatsapp').value = c.whatsapp || '';
-                document.getElementById('qrPreview').innerHTML = c.qr_imagen ? `<img src="/uploads/${c.qr_imagen}" alt="QR">` : '<p style="color:#999">Sin QR</p>';
-            } catch (e) {}
+            const r = await fetch(API_URL + '/configuracion');
+            const c = await r.json();
+            document.getElementById('qr_imagen_actual').value = c.qr_imagen || '';
+            document.getElementById('banco_nombre').value = c.banco_nombre || '';
+            document.getElementById('cuenta_titular').value = c.cuenta_titular || '';
+            document.getElementById('numero_cuenta').value = c.numero_cuenta || '';
+            document.getElementById('whatsapp').value = c.whatsapp || '';
+            document.getElementById('qrPreview').innerHTML = c.qr_imagen ? `<img src="/uploads/${c.qr_imagen}">` : '<p style="color:#999">Sin QR</p>';
         }
 
         document.getElementById('configForm').addEventListener('submit', async function(e) {
@@ -928,14 +492,10 @@ function limpiar() {
             f.append('qr_imagen_actual', document.getElementById('qr_imagen_actual').value);
             const file = document.getElementById('qr_imagen').files[0];
             if (file) f.append('qr_imagen', file);
-            try {
-                await fetch(API_URL + '/configuracion', { method: 'PUT', body: f });
-                alert('✅ Configuración guardada');
-                cargarConfiguracion();
-            } catch (e) { alert('❌ Error'); }
+            await fetch(API_URL + '/configuracion', { method: 'PUT', body: f });
+            alert('✅ Configuración guardada');
+            cargarConfiguracion();
         });
-
-
     </script>
 </body>
 </html>
