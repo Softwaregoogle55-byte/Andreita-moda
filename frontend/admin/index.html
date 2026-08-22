@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Andreita Moda - Admin</title>
     
-    <!-- Cropper.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
     
@@ -51,6 +50,7 @@
         .btn-primary{padding:13px 30px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;flex:1}
         .btn-secondary{padding:13px 30px;background:#95a5a6;color:white;border:none;border-radius:10px;cursor:pointer;font-weight:600}
         .btn-camera{margin-top:8px;padding:10px 20px;background:#2196F3;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600}
+        .btn-galeria{margin-top:8px;padding:10px 20px;background:#FF9800;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600}
         
         #imagenPreview img,#videoPreview video{width:100%;max-height:250px;object-fit:contain;border-radius:10px;margin-top:10px}
         
@@ -137,9 +137,12 @@
 
                 <!-- IMAGEN -->
                 <div class="form-group">
-                    <label>📷 Imagen</label>
-                    <input type="file" id="imagen" accept="image/*" capture="environment" onchange="previewImagen(this)">
-                    <button type="button" class="btn-camera" onclick="abrirCamara()">📸 Tomar Foto</button>
+                    <label>📷 Imagen del Producto</label>
+                    <input type="file" id="imagen" accept="image/*" onchange="previewImagen(this)" style="display:none;">
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                        <button type="button" class="btn-camera" onclick="abrirCamara()">📸 Tomar Foto</button>
+                        <button type="button" class="btn-galeria" onclick="abrirGaleria()">🖼️ Galería</button>
+                    </div>
                     <div id="imagenPreview"></div>
                     <p id="imagenStatus" style="font-size:.8em;color:#999"></p>
                 </div>
@@ -147,7 +150,7 @@
                 <!-- VIDEO -->
                 <div class="form-group">
                     <label>🎥 Video del Producto</label>
-                    <input type="file" id="video" accept="video/*" capture="environment" onchange="previewVideo(this)">
+                    <input type="file" id="video" accept="video/*" onchange="previewVideo(this)">
                     <div id="videoPreview"></div>
                     <p id="videoStatus" style="font-size:.8em;color:#999"></p>
                 </div>
@@ -285,6 +288,10 @@
             input.click();
         }
 
+        function abrirGaleria() {
+            document.getElementById('imagen').click();
+        }
+
         function previewImagen(input) {
             const file = input.files[0];
             if (file) {
@@ -317,7 +324,6 @@
             document.getElementById('imagen').value = '';
             document.getElementById('imagenPreview').innerHTML = '';
             imagenSeleccionada = null;
-            abrirCamara();
         }
 
         function modoRecorte(modo) {
@@ -356,8 +362,7 @@
             const file = input.files[0];
             if (file) {
                 videoSeleccionado = file;
-                const url = URL.createObjectURL(file);
-                document.getElementById('videoPreview').innerHTML = `<video src="${url}" controls></video>`;
+                document.getElementById('videoPreview').innerHTML = `<video src="${URL.createObjectURL(file)}" controls></video>`;
                 document.getElementById('videoStatus').textContent = '🎥 Video listo';
                 document.getElementById('videoStatus').style.color = '#4CAF50';
             }
@@ -365,25 +370,23 @@
 
         // ========== PRODUCTOS ==========
         async function cargarProductos() {
-            try {
-                const r = await fetch(API_URL + '/productos');
-                const p = await r.json();
-                const g = document.getElementById('productsGrid');
-                if (!p.length) { g.innerHTML = '<p style="color:#999;text-align:center;grid-column:1/-1">📭 Sin productos</p>'; return; }
-                g.innerHTML = p.map(x => `
-                    <div class="product-card">
-                        ${x.video ? `<video src="/uploads/${x.video}" muted></video>` : x.imagen ? `<img src="/uploads/${x.imagen}">` : '<div style="height:160px;background:#eee;display:flex;align-items:center;justify-content:center;color:#999">Sin media</div>'}
-                        <div class="product-info">
-                            <span class="cat-badge ${x.categoria === 'damas' ? 'badge-damas' : 'badge-varones'}">${x.categoria}</span>
-                            <h3>${x.nombre}</h3>
-                            <p class="price">Bs ${parseFloat(x.precio).toFixed(2)}</p>
-                            <div class="card-actions">
-                                <button class="btn-edit" onclick="editar(${x.id})">✏️</button>
-                                <button class="btn-delete" onclick="eliminar(${x.id})">🗑️</button>
-                            </div>
+            const r = await fetch(API_URL + '/productos');
+            const p = await r.json();
+            const g = document.getElementById('productsGrid');
+            if (!p.length) { g.innerHTML = '<p style="color:#999;text-align:center;grid-column:1/-1">📭 Sin productos</p>'; return; }
+            g.innerHTML = p.map(x => `
+                <div class="product-card">
+                    ${x.video ? `<video src="/uploads/${x.video}" muted></video>` : x.imagen ? `<img src="/uploads/${x.imagen}">` : '<div style="height:160px;background:#eee;display:flex;align-items:center;justify-content:center;color:#999">Sin media</div>'}
+                    <div class="product-info">
+                        <span class="cat-badge ${x.categoria === 'damas' ? 'badge-damas' : 'badge-varones'}">${x.categoria}</span>
+                        <h3>${x.nombre}</h3>
+                        <p class="price">Bs ${parseFloat(x.precio).toFixed(2)}</p>
+                        <div class="card-actions">
+                            <button class="btn-edit" onclick="editar(${x.id})">✏️</button>
+                            <button class="btn-delete" onclick="eliminar(${x.id})">🗑️</button>
                         </div>
-                    </div>`).join('');
-            } catch (e) {}
+                    </div>
+                </div>`).join('');
         }
 
         async function guardarProducto() {
@@ -398,10 +401,8 @@
             if (videoSeleccionado) f.append('video', videoSeleccionado);
             const url = currentId ? API_URL + '/productos/' + currentId : API_URL + '/productos';
             const method = currentId ? 'PUT' : 'POST';
-            try {
-                const r = await fetch(url, { method, body: f });
-                if (r.ok) { alert('✅ Publicado'); limpiar(); cargarProductos(); }
-            } catch (e) { alert('❌ Error'); }
+            const r = await fetch(url, { method, body: f });
+            if (r.ok) { alert('✅ Publicado'); limpiar(); cargarProductos(); }
         }
 
         async function editar(id) {
