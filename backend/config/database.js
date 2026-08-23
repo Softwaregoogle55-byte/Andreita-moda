@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const dbPath = process.env.RENDER_DISK 
-    ? path.join(process.env.RENDER_DISK, 'data.json')
-    : path.join(__dirname, '..', 'data.json');
+// Usar disco persistente en Render, o carpeta local en desarrollo
+const DATA_DIR = process.env.RENDER_DISK || path.join(__dirname, '..');
+const dbPath = path.join(DATA_DIR, 'data.json');
 
 let data = {
     productos: [],
@@ -15,6 +15,7 @@ let data = {
     configuracion: { id: 1, qr_imagen: null, banco_nombre: '', cuenta_titular: '', numero_cuenta: '', whatsapp: '' }
 };
 
+// Cargar datos existentes
 if (fs.existsSync(dbPath)) {
     try {
         const fileData = JSON.parse(fs.readFileSync(dbPath, 'utf8'));
@@ -23,16 +24,19 @@ if (fs.existsSync(dbPath)) {
             data.configuracion = { id: 1, qr_imagen: null, banco_nombre: '', cuenta_titular: '', numero_cuenta: '', whatsapp: '' };
         }
     } catch (e) {
-        fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
+        console.error('Error leyendo data.json, creando nuevo:', e.message);
     }
 } else {
     fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
 }
 
 function saveData() {
-    fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
+    try {
+        fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
+    } catch (e) {
+        console.error('Error guardando datos:', e.message);
+    }
 }
-
 
 const db = {
     productos: {
@@ -100,4 +104,6 @@ const db = {
 };
 
 console.log('Base de datos JSON lista ✓');
+console.log('Ruta de datos:', dbPath);
+
 module.exports = db;
