@@ -4,84 +4,96 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Andreita Moda - Admin</title>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
-    
     <style>
-        :root { --rosa:#e91e63; --azul:#2196F3; --verde:#4CAF50; --fondo:#f0f2f5; }
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#667eea,#764ba2);min-height:100vh}
-        
-        .login-container{display:flex;justify-content:center;align-items:center;min-height:100vh}
-        .login-box{background:white;padding:45px;border-radius:24px;box-shadow:0 25px 60px rgba(0,0,0,.3);text-align:center;width:420px}
-        .login-box .icon{font-size:3.5em;margin-bottom:10px}
-        .login-box h1{font-size:2em;background:linear-gradient(135deg,#667eea,#e91e63);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:5px}
-        .login-box h2{color:#888;font-weight:500;margin-bottom:30px;font-size:1em}
-        .login-box input{width:100%;padding:14px;margin:10px 0;border:2px solid #e8e8e8;border-radius:12px;font-size:15px}
-        .login-box input:focus{outline:none;border-color:#667eea}
-        .login-box button{width:100%;padding:14px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-top:20px}
-        .error-msg{color:#e74c3c;margin-top:12px;display:none;font-size:.9em}
-        
-        .admin-panel{background:var(--fondo);min-height:100vh}
-        header{background:white;padding:15px 30px;box-shadow:0 2px 15px rgba(0,0,0,.06);display:flex;justify-content:space-between;align-items:center}
-        .header-left{display:flex;align-items:center;gap:12px}
-        .header-left img{width:42px;height:42px;border-radius:10px;object-fit:cover}
-        header h1{font-size:1.3em;color:#333}
-        .header-right{display:flex;align-items:center;gap:20px}
-        .notification-bell{position:relative;cursor:pointer;font-size:1.6em}
-        .notification-badge{position:absolute;top:-8px;right:-8px;background:#e74c3c;color:white;border-radius:50%;width:20px;height:20px;font-size:.5em;font-weight:bold;display:flex;align-items:center;justify-content:center}
-        .notification-badge:empty{display:none}
-        .btn-logout{padding:10px 22px;background:#e74c3c;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600}
-        
-        .tabs{display:flex;gap:5px;padding:20px 30px 0}
-        .tab-btn{padding:12px 25px;background:rgba(255,255,255,.5);border:none;border-radius:12px 12px 0 0;cursor:pointer;font-weight:600;font-size:.9em}
-        .tab-btn.active{background:white;color:#667eea}
-        
-        .container{max-width:1400px;margin:0 auto;padding:25px;display:grid;grid-template-columns:1fr 1fr;gap:25px}
-        .card{background:white;padding:30px;border-radius:16px;box-shadow:0 5px 20px rgba(0,0,0,.06)}
-        .card h2{margin-bottom:25px;color:#333;font-size:1.3em}
-        
-        .form-group{margin-bottom:18px}
-        .form-group label{display:block;margin-bottom:6px;color:#555;font-weight:600;font-size:.9em}
-        .form-group input,.form-group textarea,.form-group select{width:100%;padding:11px;border:2px solid #e8e8e8;border-radius:10px;font-size:14px;font-family:inherit}
-        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:15px}
-        .form-actions{display:flex;gap:12px;margin-top:25px}
-        .btn-primary{padding:13px 30px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;flex:1}
-        .btn-secondary{padding:13px 30px;background:#95a5a6;color:white;border:none;border-radius:10px;cursor:pointer;font-weight:600}
-        .btn-camera{margin-top:8px;padding:10px 20px;background:#2196F3;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600}
-        .btn-galeria{margin-top:8px;padding:10px 20px;background:#FF9800;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600}
-        
-        #imagenPreview img,#videoPreview video{width:100%;max-height:250px;object-fit:contain;border-radius:10px;margin-top:10px}
-        
-        .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:15px}
-        .product-card{background:#fafafa;border-radius:12px;overflow:hidden;border:1px solid #eee}
-        .product-card img,.product-card video{width:100%;height:160px;object-fit:cover}
-        .product-info{padding:15px}
-        .cat-badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:.7em;font-weight:700;color:white;margin-bottom:8px}
-        .badge-damas{background:var(--rosa)}
-        .badge-varones{background:var(--azul)}
-        .product-info h3{font-size:.95em;margin-bottom:5px}
-        .product-info .price{font-size:1.2em;font-weight:700;color:#667eea;margin-bottom:10px}
-        .card-actions{display:flex;gap:6px}
-        .card-actions button{flex:1;padding:7px;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:.8em}
-        .btn-edit{background:#f39c12;color:white}
-        .btn-delete{background:#e74c3c;color:white}
-        
-        .notif-item{display:flex;justify-content:space-between;align-items:center;padding:15px;margin-bottom:10px;border-radius:10px;border-left:4px solid #667eea}
-        .notif-item.no-leida{background:#f0f2ff}
-        .notif-item.leida{background:#fafafa;opacity:.7}
-        .btn-mark-all{padding:8px 16px;background:#27ae60;color:white;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:.85em}
-        
-        .qr-preview img{max-width:180px;border-radius:10px;margin:10px 0;border:2px solid #eee}
-        
-        .modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:3000;overflow-y:auto}
-        .modal-box{background:white;margin:20px auto;padding:20px;width:95%;max-width:600px;border-radius:16px}
-        .crop-mode-btn{padding:10px;border:none;border-radius:8px;cursor:pointer;font-weight:600;color:white}
-        .crop-mode-btn.active{opacity:1!important;border:3px solid #333}
-        
-        @media(max-width:1024px){.container{grid-template-columns:1fr}}
-        @media(max-width:600px){.form-row{grid-template-columns:1fr}.login-box{width:90%}}
+        :root {
+            --rosa: #e91e63;
+            --azul: #2196F3;
+            --fondo: #f0f2f5;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+
+        /* Login */
+        .login-container { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .login-box { background: white; padding: 45px; border-radius: 24px; box-shadow: 0 25px 60px rgba(0,0,0,0.3); text-align: center; width: 420px; }
+        .login-box .icon { font-size: 3.5em; margin-bottom: 10px; }
+        .login-box h1 { font-size: 2em; background: linear-gradient(135deg, #667eea, #e91e63); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 5px; }
+        .login-box h2 { color: #888; font-weight: 500; margin-bottom: 30px; font-size: 1em; }
+        .login-box input { width: 100%; padding: 14px; margin: 10px 0; border: 2px solid #e8e8e8; border-radius: 12px; font-size: 15px; transition: 0.3s; }
+        .login-box input:focus { outline: none; border-color: #667eea; }
+        .login-box button { width: 100%; padding: 14px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 20px; transition: 0.3s; }
+        .login-box button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(102,126,234,0.4); }
+        .error-msg { color: #e74c3c; margin-top: 12px; display: none; font-size: 0.9em; }
+
+        /* Panel */
+        .admin-panel { background: var(--fondo); min-height: 100vh; }
+        header { background: white; padding: 15px 30px; box-shadow: 0 2px 15px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .header-left img { width: 42px; height: 42px; border-radius: 10px; object-fit: cover; }
+        header h1 { font-size: 1.3em; color: #333; }
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        .notification-bell { position: relative; cursor: pointer; font-size: 1.6em; }
+        .notification-badge { position: absolute; top: -8px; right: -8px; background: #e74c3c; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 0.5em; font-weight: bold; display: flex; align-items: center; justify-content: center; }
+        .notification-badge:empty { display: none; }
+        .btn-logout { padding: 10px 22px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        .btn-logout:hover { background: #c0392b; }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 5px; padding: 20px 30px 0; }
+        .tab-btn { padding: 12px 25px; background: rgba(255,255,255,0.5); border: none; border-radius: 12px 12px 0 0; cursor: pointer; font-weight: 600; font-size: 0.9em; transition: 0.3s; }
+        .tab-btn.active { background: white; color: #667eea; }
+        .tab-btn:hover { background: white; }
+
+        /* Contenedor */
+        .container { max-width: 1400px; margin: 0 auto; padding: 25px; display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+        .card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 5px 20px rgba(0,0,0,0.06); }
+        .card h2 { margin-bottom: 25px; color: #333; font-size: 1.3em; }
+
+        /* Formulario */
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; margin-bottom: 6px; color: #555; font-weight: 600; font-size: 0.9em; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 11px; border: 2px solid #e8e8e8; border-radius: 10px; font-size: 14px; font-family: inherit; transition: 0.3s; }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: #667eea; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .form-actions { display: flex; gap: 12px; margin-top: 25px; }
+        .btn-primary { padding: 13px 30px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; flex: 1; }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-secondary { padding: 13px 30px; background: #95a5a6; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; }
+
+        /* Preview fotos */
+        .fotos-preview { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+        .fotos-preview img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid #eee; }
+
+        /* Grid productos */
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
+        .product-card { background: #fafafa; border-radius: 12px; overflow: hidden; border: 1px solid #eee; transition: 0.3s; }
+        .product-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .product-card img { width: 100%; height: 160px; object-fit: cover; }
+        .product-info { padding: 15px; }
+        .product-info .cat-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 0.7em; font-weight: 700; color: white; margin-bottom: 8px; }
+        .badge-damas { background: var(--rosa); }
+        .badge-varones { background: var(--azul); }
+        .product-info h3 { font-size: 0.95em; margin-bottom: 5px; color: #333; }
+        .product-info .price { font-size: 1.2em; font-weight: 700; color: #667eea; margin-bottom: 5px; }
+        .product-info .fotos-count { font-size: 0.75em; color: #999; margin-bottom: 10px; }
+        .card-actions { display: flex; gap: 6px; }
+        .card-actions button { flex: 1; padding: 7px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.8em; }
+        .btn-edit { background: #f39c12; color: white; }
+        .btn-delete { background: #e74c3c; color: white; }
+
+        /* Notificaciones */
+        .notif-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; margin-bottom: 10px; border-radius: 10px; border-left: 4px solid #667eea; }
+        .notif-item.no-leida { background: #f0f2ff; }
+        .notif-item.leida { background: #fafafa; opacity: 0.7; }
+        .notif-content .mensaje { font-size: 0.95em; color: #333; }
+        .notif-content .fecha { font-size: 0.78em; color: #999; margin-top: 3px; }
+        .btn-mark-all { padding: 8px 16px; background: #27ae60; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85em; }
+
+        /* Config QR */
+        .qr-preview img { max-width: 180px; border-radius: 10px; margin: 10px 0; }
+
+        @media (max-width: 1024px) { .container { grid-template-columns: 1fr; } }
+        @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } .login-box { width: 90%; padding: 30px; } }
     </style>
 </head>
 <body>
@@ -123,101 +135,113 @@
             <div class="card">
                 <h2 id="formTitle">➕ Agregar Producto</h2>
                 <input type="hidden" id="productId">
-                
-                <div class="form-group"><label>Nombre *</label><input type="text" id="nombre" required></div>
-                <div class="form-group"><label>Descripción</label><textarea id="descripcion" rows="2"></textarea></div>
-                <div class="form-row">
-                    <div class="form-group"><label>Precio (Bs) *</label><input type="number" id="precio" step="0.01" required></div>
-                    <div class="form-group"><label>Categoría *</label><select id="categoria" required><option value="">Seleccionar</option><option value="damas">👩 Damas</option><option value="varones">👨 Varones</option></select></div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group"><label>Talla</label><select id="talla"><option value="">Seleccionar</option><option value="XS">XS</option><option value="S">S</option><option value="M">M</option><option value="L">L</option><option value="XL">XL</option></select></div>
-                    <div class="form-group"><label>Color</label><input type="text" id="color"></div>
-                </div>
-
-                <!-- IMAGEN -->
                 <div class="form-group">
-                    <label>📷 Imagen del Producto</label>
-                    <input type="file" id="imagen" accept="image/*" onchange="previewImagen(this)" style="display:none;">
-                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                        <button type="button" class="btn-camera" onclick="abrirCamara()">📸 Tomar Foto</button>
-                        <button type="button" class="btn-galeria" onclick="abrirGaleria()">🖼️ Galería</button>
+                    <label>Nombre *</label>
+                    <input type="text" id="nombre" required placeholder="Ej: Vestido Floral">
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea id="descripcion" rows="2" placeholder="Describe el producto..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Precio (Bs) *</label>
+                        <input type="number" id="precio" step="0.01" required placeholder="0.00">
                     </div>
-                    <div id="imagenPreview"></div>
-                    <p id="imagenStatus" style="font-size:.8em;color:#999"></p>
+                    <div class="form-group">
+                        <label>Categoría *</label>
+                        <select id="categoria" required>
+                            <option value="">Seleccionar</option>
+                            <option value="damas">👩 Damas</option>
+                            <option value="varones">👨 Varones</option>
+                        </select>
+                    </div>
                 </div>
-
-                <!-- VIDEO -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Talla</label>
+                        <select id="talla">
+                            <option value="">Seleccionar</option>
+                            <option value="XS">XS</option>
+                            <option value="S">S</option>
+                            <option value="M">M</option>
+                            <option value="L">L</option>
+                            <option value="XL">XL</option>
+                            <option value="XXL">XXL</option>
+                            <option value="XXXL">XXXL</option>
+                            <option value="30">30</option>
+                            <option value="31">31</option>
+                            <option value="32">32</option>
+                            <option value="33">33</option>
+                            <option value="34">34</option>
+                            <option value="35">35</option>
+                            <option value="36">36</option>
+                            <option value="37">37</option>
+                            <option value="38">38</option>
+                            <option value="39">39</option>
+                            <option value="40">40</option>
+                            <option value="41">41</option>
+                            <option value="42">42</option>
+                            <option value="43">43</option>
+                            <option value="44">44</option>
+                            <option value="45">45</option>
+                            <option value="46">46</option>
+                            <option value="47">47</option> 
+                            <option value="48">48</option>
+                            
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Color</label>
+                        <input type="text" id="color" placeholder="Ej: Rojo, Azul...">
+                    </div>
+                </div>
                 <div class="form-group">
-                    <label>🎥 Video del Producto</label>
-                    <input type="file" id="video" accept="video/*" onchange="previewVideo(this)">
-                    <div id="videoPreview"></div>
-                    <p id="videoStatus" style="font-size:.8em;color:#999"></p>
+                    <label>📷 Fotos del Producto (máximo 4)</label>
+                    <input type="file" id="fotos" accept="image/*" multiple onchange="previewFotos(this)">
+                    <div id="fotosPreview" class="fotos-preview"></div>
                 </div>
-
                 <div class="form-actions">
                     <button class="btn-primary" onclick="guardarProducto()">💾 Guardar</button>
                     <button class="btn-secondary" onclick="limpiar()">🗑️ Limpiar</button>
                 </div>
             </div>
-
             <div class="card">
-                <h2>📦 Productos</h2>
-                <div id="productsGrid" class="products-grid"><p style="color:#999;text-align:center;grid-column:1/-1">Cargando...</p></div>
+                <h2>📦 Productos Publicados</h2>
+                <div id="productsGrid" class="products-grid">
+                    <p style="color:#999;text-align:center;grid-column:1/-1">Cargando...</p>
+                </div>
             </div>
         </div>
 
         <!-- NOTIFICACIONES -->
         <div id="tabNotificaciones" class="container" style="display:none;grid-template-columns:1fr">
             <div class="card">
-                <div style="display:flex;justify-content:space-between;margin-bottom:20px"><h2 style="margin:0">🔔 Notificaciones</h2><button class="btn-mark-all" onclick="marcarTodasLeidas()">✓ Marcar todas</button></div>
-                <div id="notificationsList"></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+                    <h2 style="margin:0">🔔 Notificaciones</h2>
+                    <button class="btn-mark-all" onclick="marcarTodasLeidas()">✓ Marcar todas leídas</button>
+                </div>
+                <div id="notificationsList"><p style="color:#999;text-align:center">Cargando...</p></div>
             </div>
         </div>
 
-        <!-- CONFIG -->
+        <!-- CONFIGURACIÓN -->
         <div id="tabConfiguracion" class="container" style="display:none;grid-template-columns:1fr">
             <div class="card">
-                <h2>⚙️ Configuración QR</h2>
+                <h2>⚙️ Configuración de Pago QR</h2>
                 <form id="configForm" enctype="multipart/form-data" style="max-width:550px">
-                    <div class="form-group"><label>📷 QR</label><div id="qrPreview" class="qr-preview"></div><input type="file" id="qr_imagen" accept="image/*"><input type="hidden" id="qr_imagen_actual"></div>
-                    <div class="form-group"><label>🏦 Banco</label><input type="text" id="banco_nombre"></div>
-                    <div class="form-group"><label>👤 Titular</label><input type="text" id="cuenta_titular"></div>
-                    <div class="form-group"><label>🔢 Cuenta</label><input type="text" id="numero_cuenta"></div>
-                    <div class="form-group"><label>📱 WhatsApp</label><input type="text" id="whatsapp"></div>
-                    <button type="submit" class="btn-primary">💾 Guardar</button>
+                    <div class="form-group">
+                        <label>📷 Imagen QR</label>
+                        <div id="qrPreview" class="qr-preview"></div>
+                        <input type="file" id="qr_imagen" accept="image/*">
+                        <input type="hidden" id="qr_imagen_actual">
+                    </div>
+                    <div class="form-group"><label>🏦 Banco</label><input type="text" id="banco_nombre" placeholder="Ej: Banco Nacional de Bolivia"></div>
+                    <div class="form-group"><label>👤 Titular</label><input type="text" id="cuenta_titular" placeholder="Ej: Andreita Moda"></div>
+                    <div class="form-group"><label>🔢 Número de cuenta</label><input type="text" id="numero_cuenta" placeholder="Ej: 123456789"></div>
+                    <div class="form-group"><label>📱 WhatsApp</label><input type="text" id="whatsapp" placeholder="Ej: 59177262626"></div>
+                    <button type="submit" class="btn-primary">💾 Guardar Configuración</button>
                 </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL VERIFICAR -->
-    <div id="verifyModal" class="modal-overlay">
-        <div class="modal-box">
-            <h3 style="text-align:center;margin-bottom:15px">✅ Verificar Imagen</h3>
-            <img id="verifyImage" src="" style="width:100%;max-height:400px;object-fit:contain;border-radius:10px">
-            <div style="display:flex;gap:10px;margin-top:15px">
-                <button onclick="aceptarImagen()" style="flex:1;padding:12px;background:#4CAF50;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer">✅ Aceptar y Recortar</button>
-                <button onclick="rechazarImagen()" style="flex:1;padding:12px;background:#f44336;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer">❌ Otra</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL RECORTE -->
-    <div id="cropModal" class="modal-overlay">
-        <div class="modal-box" style="max-width:700px">
-            <h3 style="text-align:center;margin-bottom:15px">✂️ Recortar</h3>
-            <div style="max-height:350px;background:#f5f5f5;border-radius:10px;overflow:hidden"><img id="cropImage" src="" style="max-width:100%"></div>
-            <input type="range" id="zoomRange" min="0.1" max="3" step="0.1" value="1" oninput="actualizarZoom(this.value)" style="width:100%;margin-top:10px">
-            <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-                <button onclick="modoRecorte('libre')" class="crop-mode-btn active" style="background:#e91e63">✂️ Libre</button>
-                <button onclick="modoRecorte('cuadrado')" class="crop-mode-btn" style="background:#2196F3">⬜ 1:1</button>
-                <button onclick="modoRecorte('rectangular')" class="crop-mode-btn" style="background:#FF9800">▭ 4:3</button>
-                <button onclick="modoRecorte('retrato')" class="crop-mode-btn" style="background:#9C27B0">📱 3:4</button>
-            </div>
-            <div style="display:flex;gap:10px;margin-top:15px">
-                <button onclick="aplicarRecorte()" style="flex:1;padding:12px;background:#4CAF50;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer">✅ Aplicar</button>
-                <button onclick="cerrarCropModal()" style="flex:1;padding:12px;background:#f44336;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer">❌ Cancelar</button>
             </div>
         </div>
     </div>
@@ -226,16 +250,14 @@
     <script>
         const API_URL = '/api';
         let currentId = null;
-        let imagenSeleccionada = null;
-        let videoSeleccionado = null;
-        let imagenVerificada = false;
-        let cropper = null;
 
+        // ========== LOGIN ==========
         async function login() {
             const u = document.getElementById('username').value;
             const p = document.getElementById('password').value;
             const err = document.getElementById('loginError');
             err.style.display = 'none';
+            if (!u || !p) { err.textContent = '❌ Llena todos los campos'; err.style.display = 'block'; return; }
             try {
                 const r = await fetch(API_URL + '/admin/login', {
                     method: 'POST',
@@ -247,8 +269,14 @@
                     document.getElementById('adminPanel').style.display = 'block';
                     cargarProductos();
                     setInterval(actualizarContador, 10000);
-                } else { err.textContent = '❌ Credenciales inválidas'; err.style.display = 'block'; }
-            } catch (e) { err.textContent = '❌ Error de conexión'; err.style.display = 'block'; }
+                } else {
+                    err.textContent = '❌ Usuario o contraseña incorrectos';
+                    err.style.display = 'block';
+                }
+            } catch (e) {
+                err.textContent = '❌ Error de conexión';
+                err.style.display = 'block';
+            }
         }
 
         function logout() {
@@ -256,137 +284,68 @@
             document.getElementById('adminPanel').style.display = 'none';
         }
 
+        // ========== TABS ==========
         function cambiarTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('tabProductos').style.display = 'none';
             document.getElementById('tabNotificaciones').style.display = 'none';
             document.getElementById('tabConfiguracion').style.display = 'none';
-            if (tab === 'productos') { document.getElementById('tabProductos').style.display = 'grid'; document.querySelectorAll('.tab-btn')[0].classList.add('active'); cargarProductos(); }
-            else if (tab === 'notificaciones') { document.getElementById('tabNotificaciones').style.display = 'grid'; document.querySelectorAll('.tab-btn')[1].classList.add('active'); cargarNotificaciones(); }
-            else { document.getElementById('tabConfiguracion').style.display = 'grid'; document.querySelectorAll('.tab-btn')[2].classList.add('active'); cargarConfiguracion(); }
+            if (tab === 'productos') {
+                document.getElementById('tabProductos').style.display = 'grid';
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                cargarProductos();
+            } else if (tab === 'notificaciones') {
+                document.getElementById('tabNotificaciones').style.display = 'grid';
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                cargarNotificaciones();
+            } else {
+                document.getElementById('tabConfiguracion').style.display = 'grid';
+                document.querySelectorAll('.tab-btn')[2].classList.add('active');
+                cargarConfiguracion();
+            }
         }
 
-        // ========== IMAGEN ==========
-        function abrirCamara() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.capture = 'environment';
-            input.onchange = function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    imagenSeleccionada = file;
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        document.getElementById('imagenPreview').innerHTML = `<img src="${e.target.result}">`;
-                        document.getElementById('verifyImage').src = e.target.result;
-                        document.getElementById('verifyModal').style.display = 'block';
-                    };
-                    reader.readAsDataURL(file);
-                }
-            };
-            input.click();
-        }
-
-        function abrirGaleria() {
-            document.getElementById('imagen').click();
-        }
-
-        function previewImagen(input) {
-            const file = input.files[0];
-            if (file) {
-                imagenSeleccionada = file;
+        // ========== PREVIEW FOTOS ==========
+        function previewFotos(input) {
+            const container = document.getElementById('fotosPreview');
+            container.innerHTML = '';
+            Array.from(input.files).slice(0, 4).forEach(file => {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    document.getElementById('imagenPreview').innerHTML = `<img src="${e.target.result}">`;
+                    container.innerHTML += `<img src="${e.target.result}" alt="Foto">`;
                 };
                 reader.readAsDataURL(file);
-            }
-        }
-
-        function aceptarImagen() {
-            imagenVerificada = true;
-            document.getElementById('verifyModal').style.display = 'none';
-            const img = document.getElementById('imagenPreview').querySelector('img');
-            if (img) {
-                document.getElementById('cropImage').src = img.src;
-                document.getElementById('cropModal').style.display = 'block';
-                setTimeout(() => {
-                    if (cropper) cropper.destroy();
-                    cropper = new Cropper(document.getElementById('cropImage'), { aspectRatio: NaN, viewMode: 1, autoCropArea: 1, responsive: true, background: false });
-                }, 200);
-            }
-        }
-
-        function rechazarImagen() {
-            imagenVerificada = false;
-            document.getElementById('verifyModal').style.display = 'none';
-            document.getElementById('imagen').value = '';
-            document.getElementById('imagenPreview').innerHTML = '';
-            imagenSeleccionada = null;
-        }
-
-        function modoRecorte(modo) {
-            if (!cropper) return;
-            let ratio;
-            if (modo === 'libre') ratio = NaN;
-            else if (modo === 'cuadrado') ratio = 1/1;
-            else if (modo === 'rectangular') ratio = 4/3;
-            else ratio = 3/4;
-            cropper.setAspectRatio(ratio);
-            document.querySelectorAll('.crop-mode-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-        }
-
-        function actualizarZoom(v) { if (cropper) cropper.zoomTo(parseFloat(v)); }
-
-        function aplicarRecorte() {
-            if (!cropper) return;
-            const canvas = cropper.getCroppedCanvas({ width: 800 });
-            canvas.toBlob((blob) => {
-                imagenSeleccionada = new File([blob], 'recortado.jpg', { type: 'image/jpeg' });
-                document.getElementById('imagenPreview').innerHTML = `<img src="${canvas.toDataURL()}">`;
-                document.getElementById('imagenStatus').textContent = '✅ Recorte aplicado';
-                document.getElementById('imagenStatus').style.color = '#4CAF50';
-                cerrarCropModal();
-            }, 'image/jpeg', 0.9);
-        }
-
-        function cerrarCropModal() {
-            if (cropper) { cropper.destroy(); cropper = null; }
-            document.getElementById('cropModal').style.display = 'none';
-        }
-
-        // ========== VIDEO ==========
-        function previewVideo(input) {
-            const file = input.files[0];
-            if (file) {
-                videoSeleccionado = file;
-                document.getElementById('videoPreview').innerHTML = `<video src="${URL.createObjectURL(file)}" controls></video>`;
-                document.getElementById('videoStatus').textContent = '🎥 Video listo';
-                document.getElementById('videoStatus').style.color = '#4CAF50';
-            }
+            });
         }
 
         // ========== PRODUCTOS ==========
         async function cargarProductos() {
-            const r = await fetch(API_URL + '/productos');
-            const p = await r.json();
-            const g = document.getElementById('productsGrid');
-            if (!p.length) { g.innerHTML = '<p style="color:#999;text-align:center;grid-column:1/-1">📭 Sin productos</p>'; return; }
-            g.innerHTML = p.map(x => `
-                <div class="product-card">
-                    ${x.video ? `<video src="/uploads/${x.video}" muted></video>` : x.imagen ? `<img src="/uploads/${x.imagen}">` : '<div style="height:160px;background:#eee;display:flex;align-items:center;justify-content:center;color:#999">Sin media</div>'}
-                    <div class="product-info">
-                        <span class="cat-badge ${x.categoria === 'damas' ? 'badge-damas' : 'badge-varones'}">${x.categoria}</span>
-                        <h3>${x.nombre}</h3>
-                        <p class="price">Bs ${parseFloat(x.precio).toFixed(2)}</p>
-                        <div class="card-actions">
-                            <button class="btn-edit" onclick="editar(${x.id})">✏️</button>
-                            <button class="btn-delete" onclick="eliminar(${x.id})">🗑️</button>
+            try {
+                const r = await fetch(API_URL + '/productos');
+                const p = await r.json();
+                const g = document.getElementById('productsGrid');
+                if (!p.length) { g.innerHTML = '<p style="color:#999;text-align:center;grid-column:1/-1">📭 Sin productos</p>'; return; }
+                g.innerHTML = p.map(x => {
+                    let numFotos = 0;
+                    try { numFotos = JSON.parse(x.fotos || '[]').length; } catch(e) {}
+                    if (!numFotos && x.imagen) numFotos = 1;
+                    const catClass = x.categoria === 'damas' ? 'badge-damas' : 'badge-varones';
+                    return `
+                    <div class="product-card">
+                        ${x.imagen ? `<img src="/uploads/${x.imagen}" alt="${x.nombre}">` : '<div style="height:160px;background:#eee;display:flex;align-items:center;justify-content:center;color:#999">Sin foto</div>'}
+                        <div class="product-info">
+                            <span class="cat-badge ${catClass}">${x.categoria||'General'}</span>
+                            <h3>${x.nombre}</h3>
+                            <p class="price">Bs ${parseFloat(x.precio).toFixed(2)}</p>
+                            <p class="fotos-count">📷 ${numFotos} foto${numFotos !== 1 ? 's' : ''}</p>
+                            <div class="card-actions">
+                                <button class="btn-edit" onclick="editar(${x.id})">✏️</button>
+                                <button class="btn-delete" onclick="eliminar(${x.id})">🗑️</button>
+                            </div>
                         </div>
-                    </div>
-                </div>`).join('');
+                    </div>`;
+                }).join('');
+            } catch (e) {}
         }
 
         async function guardarProducto() {
@@ -397,32 +356,38 @@
             f.append('categoria', document.getElementById('categoria').value);
             f.append('talla', document.getElementById('talla').value);
             f.append('color', document.getElementById('color').value);
-            if (imagenSeleccionada) f.append('imagen', imagenSeleccionada);
-            if (videoSeleccionado) f.append('video', videoSeleccionado);
+            const fotosInput = document.getElementById('fotos');
+            Array.from(fotosInput.files).slice(0, 4).forEach(file => f.append('fotos', file));
             const url = currentId ? API_URL + '/productos/' + currentId : API_URL + '/productos';
             const method = currentId ? 'PUT' : 'POST';
-            const r = await fetch(url, { method, body: f });
-            if (r.ok) { alert('✅ Publicado'); limpiar(); cargarProductos(); }
+            try {
+                await fetch(url, { method, body: f });
+                alert('✅ Guardado');
+                limpiar();
+                cargarProductos();
+            } catch (e) { alert('❌ Error'); }
         }
 
         async function editar(id) {
-            const r = await fetch(API_URL + '/productos/' + id);
-            const p = await r.json();
-            document.getElementById('formTitle').textContent = '✏️ Editar';
-            document.getElementById('productId').value = p.id;
-            document.getElementById('nombre').value = p.nombre;
-            document.getElementById('descripcion').value = p.descripcion || '';
-            document.getElementById('precio').value = p.precio;
-            document.getElementById('categoria').value = p.categoria || '';
-            document.getElementById('talla').value = p.talla || '';
-            document.getElementById('color').value = p.color || '';
-            currentId = id;
+            try {
+                const r = await fetch(API_URL + '/productos/' + id);
+                const p = await r.json();
+                document.getElementById('formTitle').textContent = '✏️ Editar Producto';
+                document.getElementById('productId').value = p.id;
+                document.getElementById('nombre').value = p.nombre;
+                document.getElementById('descripcion').value = p.descripcion || '';
+                document.getElementById('precio').value = p.precio;
+                document.getElementById('categoria').value = p.categoria || '';
+                document.getElementById('talla').value = p.talla || '';
+                document.getElementById('color').value = p.color || '';
+                currentId = id;
+                window.scrollTo({top:0,behavior:'smooth'});
+            } catch (e) {}
         }
 
         async function eliminar(id) {
             if (!confirm('¿Eliminar?')) return;
-            await fetch(API_URL + '/productos/' + id, { method: 'DELETE' });
-            cargarProductos();
+            try { await fetch(API_URL + '/productos/' + id, { method: 'DELETE' }); alert('✅ Eliminado'); cargarProductos(); } catch (e) {}
         }
 
         function limpiar() {
@@ -434,53 +399,56 @@
             document.getElementById('categoria').value = '';
             document.getElementById('talla').value = '';
             document.getElementById('color').value = '';
-            document.getElementById('imagen').value = '';
-            document.getElementById('video').value = '';
-            document.getElementById('imagenPreview').innerHTML = '';
-            document.getElementById('videoPreview').innerHTML = '';
-            document.getElementById('imagenStatus').textContent = '';
-            document.getElementById('videoStatus').textContent = '';
-            imagenSeleccionada = null;
-            videoSeleccionado = null;
-            imagenVerificada = false;
+            document.getElementById('fotos').value = '';
+            document.getElementById('fotosPreview').innerHTML = '';
             currentId = null;
         }
 
         // ========== NOTIFICACIONES ==========
         async function cargarNotificaciones() {
-            const r = await fetch(API_URL + '/notificaciones');
-            const n = await r.json();
-            const l = document.getElementById('notificationsList');
-            if (!n.length) { l.innerHTML = '<p style="color:#999;text-align:center">📭 Sin notificaciones</p>'; return; }
-            l.innerHTML = n.map(x => `
-                <div class="notif-item ${x.leido ? 'leida' : 'no-leida'}">
-                    <div><p>${x.mensaje}</p><p style="font-size:.75em;color:#999">${new Date(x.fecha).toLocaleString('es-BO')}</p></div>
-                    <div style="display:flex;gap:8px">
-                        ${!x.leido ? `<button style="background:#3498db;color:white;border:none;padding:6px 10px;border-radius:6px;cursor:pointer" onclick="marcarLeida(${x.id})">✓</button>` : ''}
-                        <button style="background:#e74c3c;color:white;border:none;padding:6px 10px;border-radius:6px;cursor:pointer" onclick="eliminarNoti(${x.id})">🗑️</button>
-                    </div>
-                </div>`).join('');
+            try {
+                const r = await fetch(API_URL + '/notificaciones');
+                const n = await r.json();
+                const l = document.getElementById('notificationsList');
+                if (!n.length) { l.innerHTML = '<p style="color:#999;text-align:center">📭 Sin notificaciones</p>'; return; }
+                l.innerHTML = n.map(x => `
+                    <div class="notif-item ${x.leido ? 'leida' : 'no-leida'}">
+                        <div class="notif-content">
+                            <p class="mensaje">${x.mensaje}</p>
+                            <p class="fecha">📅 ${new Date(x.fecha).toLocaleString('es-BO')}</p>
+                        </div>
+                        <div style="display:flex;gap:8px">
+                            ${!x.leido ? `<button style="background:#3498db;color:white;border:none;padding:6px 10px;border-radius:6px;cursor:pointer" onclick="marcarLeida(${x.id})">✓</button>` : ''}
+                            <button style="background:#e74c3c;color:white;border:none;padding:6px 10px;border-radius:6px;cursor:pointer" onclick="eliminarNoti(${x.id})">🗑️</button>
+                        </div>
+                    </div>`).join('');
+            } catch (e) {}
         }
 
         async function actualizarContador() {
-            const r = await fetch(API_URL + '/notificaciones/no-leidas');
-            const d = await r.json();
-            document.getElementById('notificationBadge').textContent = d.total > 0 ? d.total : '';
+            try {
+                const r = await fetch(API_URL + '/notificaciones/no-leidas');
+                const d = await r.json();
+                document.getElementById('notificationBadge').textContent = d.total > 0 ? d.total : '';
+            } catch (e) {}
         }
+
         async function marcarLeida(id) { await fetch(API_URL + '/notificaciones/' + id + '/leer', { method: 'PUT' }); cargarNotificaciones(); actualizarContador(); }
         async function marcarTodasLeidas() { await fetch(API_URL + '/notificaciones/leer-todas', { method: 'PUT' }); cargarNotificaciones(); actualizarContador(); }
         async function eliminarNoti(id) { if (confirm('¿Eliminar?')) { await fetch(API_URL + '/notificaciones/' + id, { method: 'DELETE' }); cargarNotificaciones(); actualizarContador(); } }
 
-        // ========== CONFIG ==========
+        // ========== CONFIGURACIÓN ==========
         async function cargarConfiguracion() {
-            const r = await fetch(API_URL + '/configuracion');
-            const c = await r.json();
-            document.getElementById('qr_imagen_actual').value = c.qr_imagen || '';
-            document.getElementById('banco_nombre').value = c.banco_nombre || '';
-            document.getElementById('cuenta_titular').value = c.cuenta_titular || '';
-            document.getElementById('numero_cuenta').value = c.numero_cuenta || '';
-            document.getElementById('whatsapp').value = c.whatsapp || '';
-            document.getElementById('qrPreview').innerHTML = c.qr_imagen ? `<img src="/uploads/${c.qr_imagen}">` : '<p style="color:#999">Sin QR</p>';
+            try {
+                const r = await fetch(API_URL + '/configuracion');
+                const c = await r.json();
+                document.getElementById('qr_imagen_actual').value = c.qr_imagen || '';
+                document.getElementById('banco_nombre').value = c.banco_nombre || '';
+                document.getElementById('cuenta_titular').value = c.cuenta_titular || '';
+                document.getElementById('numero_cuenta').value = c.numero_cuenta || '';
+                document.getElementById('whatsapp').value = c.whatsapp || '';
+                document.getElementById('qrPreview').innerHTML = c.qr_imagen ? `<img src="/uploads/${c.qr_imagen}" alt="QR">` : '<p style="color:#999">Sin QR</p>';
+            } catch (e) {}
         }
 
         document.getElementById('configForm').addEventListener('submit', async function(e) {
@@ -493,9 +461,11 @@
             f.append('qr_imagen_actual', document.getElementById('qr_imagen_actual').value);
             const file = document.getElementById('qr_imagen').files[0];
             if (file) f.append('qr_imagen', file);
-            await fetch(API_URL + '/configuracion', { method: 'PUT', body: f });
-            alert('✅ Configuración guardada');
-            cargarConfiguracion();
+            try {
+                await fetch(API_URL + '/configuracion', { method: 'PUT', body: f });
+                alert('✅ Configuración guardada');
+                cargarConfiguracion();
+            } catch (e) { alert('❌ Error'); }
         });
     </script>
 </body>

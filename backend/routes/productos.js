@@ -13,34 +13,68 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+// ========== OBTENER TODOS ==========
 router.get('/', (req, res) => {
     res.json(db.productos.getAll());
 });
 
+// ========== OBTENER UNO ==========
 router.get('/:id', (req, res) => {
     const p = db.productos.getById(req.params.id);
     if (!p) return res.status(404).json({ message: 'No encontrado' });
     res.json(p);
 });
 
-router.post('/', upload.fields([{ name: 'imagen' }, { name: 'video' }]), (req, res) => {
+// ========== CREAR (hasta 4 fotos) ==========
+router.post('/', upload.array('fotos', 4), (req, res) => {
     const { nombre, descripcion, precio, categoria, talla, color } = req.body;
-    const imagen = req.files?.imagen?.[0]?.filename || null;
-    const video = req.files?.video?.[0]?.filename || null;
-    const nuevo = db.productos.create({ nombre, descripcion, precio, categoria, talla, color, imagen, video });
-    res.status(201).json({ success: true, id: nuevo.id });
+    
+    const fotos = req.files ? req.files.map(f => f.filename) : [];
+    const imagen = fotos[0] || null;
+    const fotosJSON = JSON.stringify(fotos);
+    
+    const nuevo = db.productos.create({ 
+        nombre, 
+        descripcion, 
+        precio: parseFloat(precio), 
+        categoria, 
+        talla, 
+        color, 
+        imagen,
+        fotos: fotosJSON
+    });
+    
+    res.status(201).json({ success: true, id: nuevo.id, fotos: fotos.length });
 });
 
-router.put('/:id', upload.fields([{ name: 'imagen' }, { name: 'video' }]), (req, res) => {
+// ========== ACTUALIZAR ==========
+router.put('/:id', upload.array('fotos', 4), (req, res) => {
     const { nombre, descripcion, precio, categoria, talla, color } = req.body;
-    const updates = { nombre, descripcion, precio, categoria, talla, color };
-    if (req.files?.imagen?.[0]?.filename) updates.imagen = req.files.imagen[0].filename;
-    if (req.files?.video?.[0]?.filename) updates.video = req.files.video[0].filename;
-    const updated = db.productos.update(req.params.id, updates);
+    const producto = db.productos.getById(req.params.id);
+    
+    let fotosExistentes = [];
+    try { fotosExistentes = JSON.parse(producto?.fotos || '[]'); } catch(e) {}
+    
+    const fotosNuevas = req.files ? req.files.map(f => f.filename) : [];
+    const todasFotos = [...fotosExistentes, ...fotosNuevas].slice(0, 4);
+    const imagen = todasFotos[0] || null;
+    
+    const updated = db.productos.update(req.params.id, {
+        nombre, 
+        descripcion, 
+        precio: parseFloat(precio), 
+        categoria, 
+        talla, 
+        color,
+        imagen,
+        fotos: JSON.stringify(todasFotos)
+    });
+    
     if (!updated) return res.status(404).json({ message: 'No encontrado' });
-    res.json({ success: true });
+    res.json({ success: true, fotos: todasFotos.length });
 });
 
+// ========== ELIMINAR ==========
 router.delete('/:id', (req, res) => {
     db.productos.delete(req.params.id);
     res.json({ success: true });
