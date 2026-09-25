@@ -5,116 +5,513 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Andreita Moda - Damas y Varones</title>
     <style>
-        :root { --rosa: #e91e63; --azul: #2196F3; --fondo: #f8f9fa; }
+        :root {
+            --rosa: #e91e63;
+            --azul: #2196F3;
+            --fondo: #f8f9fa;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--fondo); color: #333; }
 
-        .navbar { background: white; padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 20px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 1000; }
-        .logo { display: flex; align-items: center; gap: 12px; }
-        .logo img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #fce4ec; }
-        .logo h1 { font-size: 1.4em; background: linear-gradient(135deg, #e91e63, #2196F3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 800; }
-        .nav-links { display: flex; gap: 25px; }
-        .nav-links a { color: #555; text-decoration: none; font-weight: 600; font-size: 0.95em; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--fondo);
+            color: #333;
+        }
+
+        /* ========== NAVBAR ========== */
+        .navbar {
+            background: white;
+            padding: 12px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #fce4ec;
+            box-shadow: 0 3px 10px rgba(233,30,99,0.2);
+        }
+
+        .logo h1 {
+            font-size: 1.4em;
+            background: linear-gradient(135deg, #e91e63, #2196F3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: #555;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95em;
+            transition: 0.3s;
+        }
+
         .nav-links a:hover { color: var(--rosa); }
-        .cart-icon { position: relative; cursor: pointer; font-size: 1.6em; }
-        #cartCount { position: absolute; top: -8px; right: -8px; background: var(--rosa); color: white; border-radius: 50%; width: 22px; height: 22px; font-size: 0.55em; font-weight: bold; display: flex; align-items: center; justify-content: center; }
 
-        .hero { background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); padding: 80px 5%; text-align: center; color: white; }
-        .hero .hero-logo { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 4px solid white; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .hero h2 { font-size: 3em; margin-bottom: 15px; font-weight: 800; }
-        .hero p { font-size: 1.3em; margin-bottom: 30px; }
-        .hero button { padding: 16px 45px; font-size: 1.1em; background: white; color: #764ba2; border: none; border-radius: 50px; cursor: pointer; font-weight: 700; }
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            font-size: 1.6em;
+            transition: 0.3s;
+        }
 
-        .section { padding: 60px 5%; }
-        .section-header { text-align: center; margin-bottom: 40px; }
-        .section-header h2 { font-size: 2.2em; margin-bottom: 10px; }
-        .section-header .icon { font-size: 2.5em; margin-bottom: 10px; }
-        .section-header .line { width: 80px; height: 4px; border-radius: 2px; margin: 15px auto; }
-        .damas .line { background: var(--rosa); } .damas h2 { color: var(--rosa); }
-        .varones .line { background: var(--azul); } .varones h2 { color: var(--azul); }
+        .cart-icon:hover { transform: scale(1.1); }
 
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-        .product-card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.08); transition: 0.3s; cursor: pointer; }
-        .product-card:hover { transform: translateY(-8px); box-shadow: 0 15px 40px rgba(0,0,0,0.15); }
-        .product-card .img-container { position: relative; overflow: hidden; height: 300px; }
+        #cartCount {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--rosa);
+            color: white;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 0.55em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ========== HERO ========== */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            padding: 80px 5%;
+            text-align: center;
+            color: white;
+        }
+
+        .hero .hero-logo {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid white;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .hero h2 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+
+        .hero p {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+        }
+
+        .hero button {
+            padding: 16px 45px;
+            font-size: 1.1em;
+            background: white;
+            color: #764ba2;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .hero button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        /* ========== SECCIONES ========== */
+        .section {
+            padding: 60px 5%;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-header h2 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+        .section-header .icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .section-header .line {
+            width: 80px;
+            height: 4px;
+            border-radius: 2px;
+            margin: 15px auto;
+        }
+
+        .damas .line { background: var(--rosa); }
+        .damas h2 { color: var(--rosa); }
+        .varones .line { background: var(--azul); }
+        .varones h2 { color: var(--azul); }
+
+        /* ========== GRID ========== */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: 0.3s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .product-card .img-container {
+            position: relative;
+            overflow: hidden;
+            height: 320px;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .product-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;      /* ← muestra la foto completa */
-    background: #f5f5f5;      /* ← fondo para los espacios vacíos */
-    transition: 0.5s;
-}
-        .product-card:hover img { transform: scale(1.08); }
-        .product-card .badge { position: absolute; top: 15px; left: 15px; padding: 6px 14px; border-radius: 20px; font-size: 0.75em; font-weight: 700; color: white; }
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: 0.5s;
+        }
+
+        .product-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .product-card .badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: 700;
+            color: white;
+            z-index: 2;
+        }
+
         .badge-damas { background: var(--rosa); }
         .badge-varones { background: var(--azul); }
-        .fotos-badge { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.7); color: white; padding: 4px 10px; border-radius: 15px; font-size: 0.75em; font-weight: 600; }
-        .product-card .no-image { height: 300px; display: flex; align-items: center; justify-content: center; font-size: 4em; background: #f5f5f5; }
-        .product-info { padding: 20px; }
-        .product-info h3 { font-size: 1.05em; margin-bottom: 8px; color: #333; }
-        .product-info .price { font-size: 1.6em; font-weight: 800; margin-bottom: 10px; }
-        .price-damas { color: var(--rosa); } .price-varones { color: var(--azul); }
-        .btn-comprar { width: 100%; padding: 12px; border: none; border-radius: 10px; font-weight: 700; font-size: 0.95em; cursor: pointer; color: white; transition: 0.3s; }
+
+        .product-card .fotos-count {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.75);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.75em;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        .product-card .no-image {
+            height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
+            background: #f5f5f5;
+        }
+
+        .product-info {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-info h3 {
+            font-size: 1.05em;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .product-info .price {
+            font-size: 1.6em;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .price-damas { color: var(--rosa); }
+        .price-varones { color: var(--azul); }
+
+        .product-info .details {
+            display: flex;
+            gap: 12px;
+            font-size: 0.85em;
+            color: #888;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-comprar {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.95em;
+            cursor: pointer;
+            color: white;
+            transition: 0.3s;
+            margin-top: auto;
+        }
+
         .btn-damas { background: linear-gradient(135deg, #e91e63, #f06292); }
         .btn-varones { background: linear-gradient(135deg, #2196F3, #64B5F6); }
-        .btn-comprar:hover { opacity: 0.9; }
 
-        .filters-bar { background: white; padding: 15px 5%; display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 74px; z-index: 999; }
-        .filter-btn { padding: 10px 20px; border: 2px solid #e0e0e0; background: white; border-radius: 25px; cursor: pointer; font-weight: 600; font-size: 0.9em; }
-        .filter-btn.active, .filter-btn:hover { border-color: var(--rosa); color: var(--rosa); }
+        .btn-comprar:hover { opacity: 0.9; transform: translateY(-2px); }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; overflow-y: auto; }
-        .modal-content { background: white; margin: 30px auto; padding: 30px; width: 90%; max-width: 500px; border-radius: 20px; position: relative; text-align: center; }
-        .close { position: absolute; top: 15px; right: 20px; font-size: 28px; cursor: pointer; color: #999; }
-        .close:hover { color: #333; }
+        /* ========== FILTROS ========== */
+        .filters-bar {
+            background: white;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 74px;
+            z-index: 999;
+        }
 
-        .galeria-container { position: relative; margin-bottom: 15px; }
-        .foto-principal { width: 100%; max-height: 350px; object-fit: cover; border-radius: 12px; }
-        .fotos-miniaturas { display: flex; gap: 8px; margin-top: 10px; justify-content: center; flex-wrap: wrap; }
-        .mini { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: 0.3s; }
-        .mini:hover { border-color: #e91e63; }
-        .mini.activa { border-color: #e91e63; box-shadow: 0 0 10px rgba(233,30,99,0.4); }
-        .contador-fotos { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; padding: 4px 12px; border-radius: 15px; font-size: 0.8em; }
+        .filter-btn {
+            padding: 10px 20px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: 0.3s;
+        }
 
-        .whatsapp-float { position: fixed; bottom: 25px; right: 25px; background: #25D366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 8px 25px rgba(37,211,102,0.4); z-index: 1000; text-decoration: none; }
-        footer { background: #1a1a2e; color: white; padding: 50px 5% 20px; }
-        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-bottom: 30px; }
-        .footer-col h3 { margin-bottom: 15px; }
+        .filter-btn.active, .filter-btn:hover {
+            border-color: var(--rosa);
+            color: var(--rosa);
+        }
+
+        /* ========== MODAL ========== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 2000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 30px auto;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 30px;
+            cursor: pointer;
+            color: #999;
+            z-index: 10;
+            background: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close:hover { color: #e91e63; background: #f5f5f5; }
+
+        /* ========== GALERÍA ========== */
+        .galeria-principal {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            background: #f5f5f5;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .galeria-principal img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .galeria-thumbs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .galeria-thumbs img {
+            width: 100%;
+            height: 80px;
+            object-fit: contain;
+            background: #f5f5f5;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid #eee;
+            transition: 0.3s;
+        }
+
+        .galeria-thumbs img:hover { border-color: #667eea; }
+
+        .galeria-thumbs img.activa {
+            border-color: var(--rosa);
+            box-shadow: 0 0 0 2px rgba(233,30,99,0.2);
+        }
+
+        /* ========== WHATSAPP ========== */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #25D366;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            box-shadow: 0 8px 25px rgba(37,211,102,0.4);
+            z-index: 1000;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .whatsapp-float:hover { transform: scale(1.1); }
+
+        /* ========== FOOTER ========== */
+        footer {
+            background: #1a1a2e;
+            color: white;
+            padding: 50px 5% 20px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-col h3 { margin-bottom: 15px; font-size: 1.1em; }
         .footer-col p { color: #aaa; margin: 5px 0; font-size: 0.9em; }
-        .footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid #333; color: #666; font-size: 0.85em; }
 
-        @media (max-width: 768px) { .hero h2 { font-size: 2em; } .nav-links { display: none; } .hero .hero-logo { width: 100px; height: 100px; } }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+            color: #666;
+            font-size: 0.85em;
+        }
+
+        @media (max-width: 768px) {
+            .hero h2 { font-size: 2em; }
+            .nav-links { display: none; }
+            .section-header h2 { font-size: 1.6em; }
+            .hero .hero-logo { width: 100px; height: 100px; }
+            .products-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+            .product-card .img-container { height: 280px; }
+        }
     </style>
 </head>
 <body>
 
+    <!-- NAVBAR -->
     <nav class="navbar">
         <div class="logo">
-            <img src="https://cdn.phototourl.com/free/2026-08-16-1600c8b6-d670-4973-a77c-d5a72c7d291e.png" alt="Andreita Moda">
+            <img src="https://cdn.phototourl.com/free/2026-08-16-1600c8b6-d670-4973-a77c-d5a72c7d291e.png" alt="Andreita Moda" onerror="this.style.display='none'">
             <h1>Andreita Moda</h1>
         </div>
         <div class="nav-links">
             <a href="#damas">👩 Damas</a>
             <a href="#varones">👨 Varones</a>
         </div>
-        <div class="cart-icon" onclick="verCarrito()">🛒<span id="cartCount">0</span></div>
+        <div class="cart-icon" onclick="verCarrito()">
+            🛒<span id="cartCount">0</span>
+        </div>
     </nav>
 
+    <!-- HERO -->
     <section class="hero">
-        <img src="https://cdn.phototourl.com/free/2026-08-16-1600c8b6-d670-4973-a77c-d5a72c7d291e.png" alt="Andreita Moda" class="hero-logo">
+        <img src="https://cdn.phototourl.com/free/2026-08-16-1600c8b6-d670-4973-a77c-d5a72c7d291e.png" alt="Andreita Moda" class="hero-logo" onerror="this.style.display='none'">
         <h2>Moda para Damas y Varones</h2>
-        <h3>Santa Cruz de la sierra - Bolivia</h3>
+        <h3>SANTA CRUZ DE LA SIERRA-BOLIVIA </h3>
         <p>✨ Encuentra tu estilo perfecto ✨</p>
-
         <button onclick="document.getElementById('damas').scrollIntoView({behavior:'smooth'})">🛍️ Ver Colección</button>
     </section>
 
+    <!-- FILTROS -->
     <div class="filters-bar">
         <button class="filter-btn active" onclick="filtrar('todos', this)">🌟 Todos</button>
         <button class="filter-btn" onclick="filtrar('damas', this)">👩 Damas</button>
         <button class="filter-btn" onclick="filtrar('varones', this)">👨 Varones</button>
     </div>
 
+    <!-- DAMAS -->
     <section class="section damas" id="damas">
         <div class="section-header">
             <div class="icon">👩</div>
@@ -124,6 +521,7 @@
         <div id="gridDamas" class="products-grid"><p style="color:#999;grid-column:1/-1;text-align:center">Cargando...</p></div>
     </section>
 
+    <!-- VARONES -->
     <section class="section varones" id="varones">
         <div class="section-header">
             <div class="icon">👨</div>
@@ -133,6 +531,7 @@
         <div id="gridVarones" class="products-grid"><p style="color:#999;grid-column:1/-1;text-align:center">Cargando...</p></div>
     </section>
 
+    <!-- MODAL -->
     <div id="productModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="cerrarModal()">&times;</span>
@@ -140,8 +539,10 @@
         </div>
     </div>
 
+    <!-- WHATSAPP -->
     <a href="https://wa.me/59160036671" target="_blank" class="whatsapp-float" title="Consultar por WhatsApp">💬</a>
 
+    <!-- FOOTER -->
     <footer>
         <div class="footer-grid">
             <div class="footer-col">
@@ -150,20 +551,20 @@
             </div>
             <div class="footer-col">
                 <h3>📞 Contacto</h3>
-                <p>📱 +591 60036671</p>
-                <p>Agregamos al grupo de WhatsApp para informacion pedidos y entregas</p>
-                
+                <p>📱 +591 77262626</p>
+                <p>Agregamos al grupo de whatsapp</p>
             </div>
             <div class="footer-col">
                 <h3>Síguenos</h3>
                 <p>📘 Facebook</p>
-                <p>📷 Instagram</p>
-                <p>🎵 TikTok</p>
+                
+                <p>🎵 TikTok live</p>
             </div>
         </div>
         <div class="footer-bottom">&copy; 2026 Andreita Moda - Todos los derechos reservados</div>
     </footer>
 
+    <!-- SCRIPT -->
     <script>
         const API_URL = '/api';
         let todosLosProductos = [];
@@ -171,6 +572,20 @@
 
         document.addEventListener('DOMContentLoaded', cargarProductos);
 
+        // ========== UTILIDADES ==========
+        function parseImagenes(p) {
+            // Soporta "imagenes" (JSON array) o "imagen" (single)
+            if (p.imagenes) {
+                try {
+                    const arr = JSON.parse(p.imagenes);
+                    if (Array.isArray(arr) && arr.length > 0) return arr;
+                } catch (e) {}
+            }
+            if (p.imagen) return [p.imagen];
+            return [];
+        }
+
+        // ========== CARGAR PRODUCTOS ==========
         async function cargarProductos() {
             try {
                 const r = await fetch(API_URL + '/productos');
@@ -178,80 +593,134 @@
                 mostrarPorSecciones(todosLosProductos);
             } catch (e) {
                 document.querySelectorAll('.products-grid').forEach(g => {
-                    g.innerHTML = '<p style="color:red;text-align:center;grid-column:1/-1">❌ Error al cargar</p>';
+                    g.innerHTML = '<p style="color:red;text-align:center;grid-column:1/-1">❌ Error al cargar productos</p>';
                 });
             }
         }
 
         function mostrarPorSecciones(productos) {
-            const damas = productos.filter(p => p.categoria === 'damas');
-            const varones = productos.filter(p => p.categoria === 'varones');
+            const damas = productos.filter(p => ['damas','mujer','vestidos','blusas','faldas'].includes(p.categoria));
+            const varones = productos.filter(p => ['varones','hombre','pantalones','chaquetas'].includes(p.categoria));
             document.getElementById('gridDamas').innerHTML = renderProductos(damas, 'damas');
             document.getElementById('gridVarones').innerHTML = renderProductos(varones, 'varones');
         }
 
         function renderProductos(productos, tipo) {
-            if (!productos.length) return '<p style="color:#999;text-align:center;grid-column:1/-1;padding:30px">📭 Próximamente nuevos productos</p>';
+            if (!productos.length) {
+                return '<p style="color:#999;text-align:center;grid-column:1/-1;padding:30px">📭 Próximamente nuevos productos</p>';
+            }
             return productos.map(p => {
-                let numFotos = 0;
-                try { numFotos = JSON.parse(p.fotos || '[]').length; } catch(e) {}
-                if (!numFotos && p.imagen) numFotos = 1;
+                const imagenes = parseImagenes(p);
+                const totalFotos = imagenes.length;
                 return `
-                <div class="product-card" onclick="verDetalle(${p.id})">
-                    <div class="img-container">
-                        ${p.imagen ? `<img src="/uploads/${p.imagen}" alt="${p.nombre}">` : `<div class="no-image">👗</div>`}
-                        <span class="badge badge-${tipo}">${tipo === 'damas' ? 'Damas' : 'Varones'}</span>
-                        ${numFotos > 1 ? `<span class="fotos-badge">📷 ${numFotos}</span>` : ''}
+                    <div class="product-card" onclick="verDetalle(${p.id})">
+                        <div class="img-container">
+                            ${imagenes.length > 0 
+                                ? `<img src="/uploads/${imagenes[0]}" alt="${p.nombre}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22><rect fill=%22%23f5f5f5%22 width=%22300%22 height=%22300%22/><text x=%2250%25%22 y=%2250%25%22 font-size=%2260%22 text-anchor=%22middle%22 dy=%22.3em%22>👗</text></svg>'">` 
+                                : `<div class="no-image">👗</div>`
+                            }
+                            <span class="badge badge-${tipo}">${tipo === 'damas' ? 'Damas' : 'Varones'}</span>
+                            ${totalFotos > 1 ? `<span class="fotos-count">📷 ${totalFotos} fotos</span>` : ''}
+                        </div>
+                        <div class="product-info">
+                            <h3>${p.nombre}</h3>
+                            <p class="price price-${tipo}">Bs ${parseFloat(p.precio).toFixed(2)}</p>
+                            <div class="details">
+                                ${p.talla ? `<span>📏 ${p.talla}</span>` : ''}
+                                ${p.color ? `<span>🎨 ${p.color}</span>` : ''}
+                            </div>
+                            <button class="btn-comprar btn-${tipo}" onclick="event.stopPropagation();agregarCarrito(${p.id})">🛒 Agregar al Carrito</button>
+                        </div>
                     </div>
-                    <div class="product-info">
-                        <h3>${p.nombre}</h3>
-                        <p class="price price-${tipo}">Bs ${parseFloat(p.precio).toFixed(2)}</p>
-                        <button class="btn-comprar btn-${tipo}" onclick="event.stopPropagation();agregarCarrito(${p.id})">🛒 Agregar al Carrito</button>
-                    </div>
-                </div>`;
+                `;
             }).join('');
         }
 
+        // ========== FILTROS ==========
         function filtrar(categoria, btn) {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             if (categoria === 'todos') { mostrarPorSecciones(todosLosProductos); return; }
-            const filtrados = todosLosProductos.filter(p => p.categoria === categoria);
+            const filtrados = todosLosProductos.filter(p => {
+                if (categoria === 'damas') return ['damas','mujer','vestidos','blusas','faldas'].includes(p.categoria);
+                if (categoria === 'varones') return ['varones','hombre','pantalones','chaquetas'].includes(p.categoria);
+                return false;
+            });
             document.getElementById('gridDamas').innerHTML = categoria === 'damas' ? renderProductos(filtrados, 'damas') : '';
             document.getElementById('gridVarones').innerHTML = categoria === 'varones' ? renderProductos(filtrados, 'varones') : '';
             document.getElementById(categoria).scrollIntoView({behavior:'smooth'});
         }
 
+        // ========== VER DETALLE CON GALERÍA ==========
         async function verDetalle(id) {
-            const r = await fetch(API_URL + '/productos/' + id);
-            const p = await r.json();
-            let fotos = [];
-            try { fotos = JSON.parse(p.fotos || '[]'); } catch(e) {}
-            if (!fotos.length && p.imagen) fotos = [p.imagen];
-            const galeriaHTML = fotos.length > 0 ? `
-                <div class="galeria-container">
-                    <img src="/uploads/${fotos[0]}" class="foto-principal" id="fotoPrincipal" alt="${p.nombre}">
-                    ${fotos.length > 1 ? `<div class="fotos-miniaturas">${fotos.map((f, i) => `<img src="/uploads/${f}" class="mini ${i===0?'activa':''}" onclick="cambiarFoto(this, '/uploads/${f}')" alt="Foto ${i+1}">`).join('')}</div>` : ''}
-                    <span class="contador-fotos">📷 ${fotos.length} foto${fotos.length > 1 ? 's' : ''}</span>
-                </div>` : '<div class="no-image">👗</div>';
-            document.getElementById('modalDetails').innerHTML = `
-                ${galeriaHTML}
-                <h2 style="margin-bottom:5px">${p.nombre}</h2>
-                <p style="font-size:2em;color:#e91e63;font-weight:800;margin:10px 0">Bs ${parseFloat(p.precio).toFixed(2)}</p>
-                <p style="color:#666">📏 ${p.talla||'N/A'} | 🎨 ${p.color||'N/A'} | 📦 ${p.categoria||'General'}</p>
-                <p style="margin:15px 0;color:#555">${p.descripcion||'Sin descripción'}</p>
-                <button class="btn-comprar btn-damas" onclick="agregarCarrito(${p.id});cerrarModal()">🛒 Agregar al Carrito</button>`;
-            document.getElementById('productModal').style.display = 'block';
+            try {
+                const r = await fetch(API_URL + '/productos/' + id);
+                const p = await r.json();
+                const imagenes = parseImagenes(p);
+                const totalFotos = imagenes.length;
+                const tipo = (p.categoria === 'damas' || p.categoria === 'mujer') ? 'damas' : 'varones';
+
+                let galeriaHTML = '';
+                if (imagenes.length > 0) {
+                    galeriaHTML = `
+                        <div class="galeria-principal">
+                            <img id="imgPrincipal" src="/uploads/${imagenes[0]}" alt="${p.nombre}">
+                        </div>
+                        ${totalFotos > 1 ? `
+                            <p style="text-align:center;color:#666;font-size:0.9em;margin-bottom:10px;">📷 ${totalFotos} fotos disponibles - Toca para cambiar</p>
+                            <div class="galeria-thumbs">
+                                ${imagenes.map((img, i) => `
+                                    <img src="/uploads/${img}" 
+                                         class="${i === 0 ? 'activa' : ''}" 
+                                         onclick="cambiarFoto(this, '/uploads/${img}')"
+                                         alt="Foto ${i+1}">
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    `;
+                } else {
+                    galeriaHTML = `<div class="galeria-principal"><div class="no-image">👗</div></div>`;
+                }
+
+                document.getElementById('modalDetails').innerHTML = `
+                    ${galeriaHTML}
+                    <h2 style="margin-bottom:8px;text-align:center">${p.nombre}</h2>
+                    <p style="font-size:2em;color:${tipo === 'damas' ? '#e91e63' : '#2196F3'};font-weight:800;margin:10px 0;text-align:center">
+                        Bs ${parseFloat(p.precio).toFixed(2)}
+                    </p>
+                    <div style="display:flex;justify-content:center;gap:15px;color:#666;font-size:0.95em;margin-bottom:15px">
+                        ${p.talla ? `<span>📏 Talla: ${p.talla}</span>` : ''}
+                        ${p.color ? `<span>🎨 Color: ${p.color}</span>` : ''}
+                    </div>
+                    ${p.descripcion ? `
+                        <div style="background:#f9f9f9;padding:15px;border-radius:10px;margin:15px 0;">
+                            <p style="font-weight:600;margin-bottom:5px">📝 Descripción:</p>
+                            <p style="color:#555;line-height:1.5">${p.descripcion}</p>
+                        </div>
+                    ` : ''}
+                    <button class="btn-comprar btn-${tipo}" onclick="agregarCarrito(${p.id});cerrarModal()" style="margin-top:10px">
+                        🛒 Agregar al Carrito
+                    </button>
+                `;
+                document.getElementById('productModal').style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            } catch (e) {
+                alert('Error al cargar detalles del producto');
+            }
         }
 
-        function cambiarFoto(elemento, src) {
-            document.getElementById('fotoPrincipal').src = src;
-            document.querySelectorAll('.mini').forEach(m => m.classList.remove('activa'));
-            elemento.classList.add('activa');
+        function cambiarFoto(thumb, src) {
+            document.getElementById('imgPrincipal').src = src;
+            document.querySelectorAll('.galeria-thumbs img').forEach(i => i.classList.remove('activa'));
+            thumb.classList.add('activa');
         }
 
-        function cerrarModal() { document.getElementById('productModal').style.display = 'none'; }
+        function cerrarModal() {
+            document.getElementById('productModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
 
+        // ========== CARRITO ==========
         async function agregarCarrito(id) {
             const p = todosLosProductos.find(x => x.id === id);
             if (p) {
@@ -261,7 +730,12 @@
                     await fetch(API_URL + '/notificaciones', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ producto_id: p.id, producto_nombre: p.nombre, producto_precio: p.precio, cliente_ip: 'Cliente' })
+                        body: JSON.stringify({ 
+                            producto_id: p.id, 
+                            producto_nombre: p.nombre, 
+                            producto_precio: p.precio, 
+                            cliente_ip: 'Cliente' 
+                        })
                     });
                 } catch (e) {}
                 alert('✅ Agregado al carrito');
@@ -272,29 +746,41 @@
             if (!carrito.length) { alert('🛒 Carrito vacío'); return; }
             let total = 0;
             let msg = '🛍️ TU CARRITO\n\n';
-            carrito.forEach((p, i) => { msg += `${i+1}. ${p.nombre} - Bs ${parseFloat(p.precio).toFixed(2)}\n`; total += parseFloat(p.precio); });
+            carrito.forEach((p, i) => { 
+                msg += `${i+1}. ${p.nombre} - Bs ${parseFloat(p.precio).toFixed(2)}\n`; 
+                total += parseFloat(p.precio); 
+            });
             msg += `\n💰 TOTAL: Bs ${total.toFixed(2)}`;
+            
             if (confirm(msg + '\n\n¿Proceder con el pago?')) {
                 try {
                     const r = await fetch(API_URL + '/configuracion');
                     const c = await r.json();
                     document.getElementById('modalDetails').innerHTML = `
-                        <h2>💳 Datos para el Pago</h2>
-                        ${c.qr_imagen ? `<img src="/uploads/${c.qr_imagen}" style="max-width:220px;border-radius:12px;margin:15px 0">` : '<p style="color:#999">QR no configurado</p>'}
-                        <p><strong>🏦 Banco:</strong> ${c.banco_nombre||'No configurado'}</p>
-                        <p><strong>👤 Titular:</strong> ${c.cuenta_titular||'No configurado'}</p>
-                        <p><strong>🔢 Cuenta:</strong> ${c.numero_cuenta||'No configurado'}</p>
-                        <p style="font-size:1.6em;color:#e91e63;font-weight:800;margin:15px 0">Bs ${total.toFixed(2)}</p>
-                        ${c.whatsapp ? `<a href="https://wa.me/${c.whatsapp}?text=Hola%20Andreita%20Moda,%20confirmo%20mi%20compra%20por%20Bs%20${total.toFixed(2)}" target="_blank" style="display:inline-block;padding:12px 30px;background:#25D366;color:white;border-radius:25px;text-decoration:none;font-weight:700">📱 Enviar comprobante</a>` : '<p style="color:red">WhatsApp no configurado</p>'}`;
+                        <h2 style="text-align:center">💳 Datos para el Pago</h2>
+                        ${c.qr_imagen ? `<img src="/uploads/${c.qr_imagen}" style="max-width:250px;display:block;margin:15px auto;border-radius:12px">` : '<p style="color:#999;text-align:center">QR no configurado</p>'}
+                        <div style="background:#f9f9f9;padding:15px;border-radius:10px;margin:15px 0;">
+                            <p><strong>🏦 Banco:</strong> ${c.banco_nombre||'No configurado'}</p>
+                            <p><strong>👤 Titular:</strong> ${c.cuenta_titular||'No configurado'}</p>
+                            <p><strong>🔢 Cuenta:</strong> ${c.numero_cuenta||'No configurado'}</p>
+                        </div>
+                        <p style="font-size:1.6em;color:#e91e63;font-weight:800;text-align:center;margin:15px 0">Total: Bs ${total.toFixed(2)}</p>
+                        ${c.whatsapp ? `<a href="https://wa.me/${c.whatsapp}?text=Hola%20Andreita%20Moda,%20confirmo%20mi%20compra%20por%20Bs%20${total.toFixed(2)}" target="_blank" style="display:block;text-align:center;padding:14px;background:#25D366;color:white;border-radius:10px;text-decoration:none;font-weight:700;margin-top:10px">📱 Enviar comprobante por WhatsApp</a>` : '<p style="color:red;text-align:center">WhatsApp no configurado</p>'}`;
                     document.getElementById('productModal').style.display = 'block';
+                    document.body.style.overflow = 'hidden';
                     carrito = [];
                     document.getElementById('cartCount').textContent = '0';
                 } catch (e) { alert('Error al cargar datos'); }
             }
         }
 
-        window.onclick = function(e) { if (e.target == document.getElementById('productModal')) cerrarModal(); }
-        document.addEventListener('keydown', function(e) { if (e.key === 'Escape') cerrarModal(); });
+        // ========== CERRAR MODAL ==========
+        window.onclick = function(e) { 
+            if (e.target == document.getElementById('productModal')) cerrarModal(); 
+        }
+        document.addEventListener('keydown', function(e) { 
+            if (e.key === 'Escape') cerrarModal(); 
+        });
     </script>
 </body>
 </html>
