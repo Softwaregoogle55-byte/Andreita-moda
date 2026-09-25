@@ -101,6 +101,8 @@ const db = {
             return data.configuracion;
         }
     }
+
+    
 };
 
 console.log('Base de datos JSON lista ✓');
